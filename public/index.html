@@ -886,12 +886,10 @@ function sendMsg(){
 // ── Socket events ──────────────────────────────────────────
 socket.on('waiting_no_match', ()=>{
   if (cancelPending) return;
-  // Just stay on waiting screen, no countdown. Retry automatically every 5s.
-  const wtxt = document.getElementById('wait-txt');
-  if (wtxt) wtxt.textContent = t.looking;
+  // Stay on waiting screen and keep retrying silently
   setTimeout(()=>{
-    if (!cancelPending) socket.emit('find_match');
-  }, 5000);
+    if (!cancelPending && !inChat && !connecting) socket.emit('find_match');
+  }, 3000);
 });
 
 socket.on('matched', ({partnerMeta:pm})=>{
@@ -926,8 +924,23 @@ socket.on('partner_left', ()=>{
   connecting = false;
   inChat = false;
   hideTyping();
-  showDisco(t.discopartner);
   soundDisco();
+  // Show message inside chat — do NOT clear the screen
+  sysMsg(t.discopartner);
+  // Replace the End button with a New Chat button
+  const bar = document.getElementById('chat-bar');
+  if (bar) {
+    const endBtn = bar.querySelector('.btn-end');
+    if (endBtn) {
+      endBtn.textContent = t.findnew;
+      endBtn.onclick = findMatch;
+    }
+  }
+  // Disable the input
+  const inp = document.getElementById('minput');
+  if (inp) { inp.disabled = true; inp.placeholder = t.discopartner; }
+  const bsend = document.querySelector('.bsend');
+  if (bsend) bsend.disabled = true;
 });
 
 // ── Init ───────────────────────────────────────────────────
