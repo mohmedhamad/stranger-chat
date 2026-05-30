@@ -1,461 +1,890 @@
 <!DOCTYPE html>
-<html lang="en">
+<html id="html-root" lang="en" dir="ltr">
 <head>
- <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-DFRS58F0XZ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+ <script async src="https://www.googletagmanager.com/gtag/js?id=G-DFRS58F0XZ"></script> 
+ <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-DFRS58F0XZ');
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 
-  gtag('config', 'G-DFRS58F0XZ');
+<!-- SEO -->
+<title>Chatcha | شاتشا - Chat Online, Meet Strangers, Arab Chat | دردشه عربيه اونلاين</title>
+<meta name="description" content="Chatcha - شاتشا: Free anonymous chat online. Meet strangers, Arab chat, chat with Arabs. دردشه عربيه مجانية، دردشه اونلاين، شات عربى، دردشه مع بنات، دردشه مصرى."/>
+<meta name="keywords" content="chat online, meet strangers, arab chat, arab chatting, chat with arab, chatcha, شاتشا, دردشه عربى, دردشه اونلاين, شات عربى, دردشه مصرى, دردشه مع بنات, دردشه عربيه, chat with strangers, random chat, online chat free"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://chatcha.onrender.com/"/>
+<meta property="og:title" content="Chatcha | شاتشا - دردشه عربيه اونلاين"/>
+<meta property="og:description" content="Free anonymous Arab chat online. Chat with strangers now. دردشه عربيه مجانية مع غرباء."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://chatcha.onrender.com/"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Chatcha شاتشا | دردشه عربيه اونلاين"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"Chatcha","alternateName":"شاتشا","description":"Free anonymous Arab chat online. دردشه عربيه مجانية.","url":"https://chatcha.onrender.com/","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
 </script>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Stranger/ — Chat with someone random</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;1,400&family=DM+Sans:wght@400;500&family=Cairo:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <script src="/socket.io/socket.io.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-  :root {
-    --bg:       #f5f0e8;
-    --bg2:      #ede8de;
-    --bg3:      #fff;
-    --border:   #ddd6c8;
-    --accent:   #2d6a4f;
-    --accent2:  #1b4332;
-    --text:     #2c2c2c;
-    --muted:    #8a7f70;
-    --green:    #52b788;
-    --bubble-them: #fff;
-    --bubble-me: #2d6a4f;
-    --shadow:   0 1px 4px rgba(0,0,0,0.07);
-  }
+/* ── THEMES ── */
+:root {
+  --bg:#f5f0e8;--bg2:#ede8de;--bg3:#fff;
+  --border:#ddd6c8;--accent:#2d6a4f;--accent2:#1b4332;
+  --text:#2c2c2c;--muted:#8a7f70;--green:#52b788;
+  --bubble-them:#fff;--bubble-me:#2d6a4f;--bubble-me-text:#fff;
+  --shadow:0 1px 4px rgba(0,0,0,0.07);
+  --danger:#e63946;--overlay:rgba(245,240,232,0.94);
+  --topbar-bg:#ede8de;
+  --font-main:'DM Sans',sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#111318;--bg2:#1a1d24;--bg3:#22262f;
+  --border:#2e323d;--accent:#52b788;--accent2:#40916c;
+  --text:#e8e4dc;--muted:#6b7280;--green:#52b788;
+  --bubble-them:#22262f;--bubble-me:#2d6a4f;--bubble-me-text:#fff;
+  --shadow:0 1px 6px rgba(0,0,0,0.3);
+  --danger:#f87171;--overlay:rgba(17,19,24,0.95);
+  --topbar-bg:#1a1d24;
+}
+[data-theme="blink"]{
+  --bg:#0c0c0c;--bg2:#161616;--bg3:#1e1e1e;
+  --border:#2a2a2a;--accent:#00ff88;--accent2:#00cc66;
+  --text:#e0e0e0;--muted:#555;--green:#00ff88;
+  --bubble-them:#1e1e1e;--bubble-me:#003d1f;--bubble-me-text:#00ff88;
+  --shadow:0 1px 6px rgba(0,255,136,0.07);
+  --danger:#ff4444;--overlay:rgba(12,12,12,0.96);
+  --topbar-bg:#161616;
+  --font-main:'Space Mono',monospace;
+}
 
-  html, body {
-    height: 100%;
-    overflow: hidden;
-  }
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:var(--font-main);
+  background:var(--bg);color:var(--text);
+  height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  transition:background 0.3s,color 0.3s;
+}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+#app{
+  width:100%;height:100%;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  overflow:hidden;position:relative;
+  transition:background 0.3s;
+}
+@media(min-width:700px){
+  body{background:#1a1a2e;}
+  #app{
+    max-width:700px;height:88vh;max-height:800px;
+    border:1px solid var(--border);
+    border-radius:20px;
+    box-shadow:0 12px 60px rgba(0,0,0,0.25);
   }
+}
 
-  #app {
-    width: 100%;
-    max-width: 560px;
-    height: 100%;
-    height: -webkit-fill-available;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  }
+/* TOP BAR */
+#topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 16px;
+  background:var(--topbar-bg);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  transition:background 0.3s,border-color 0.3s;
+}
+.logo{
+  display:flex;flex-direction:column;line-height:1.1;cursor:pointer;
+}
+.logo .en-name{
+  font-family:'Lora',serif;font-size:17px;font-weight:500;
+  color:var(--accent);letter-spacing:1px;
+}
+.logo .ar-name{
+  font-family:'Cairo',sans-serif;font-size:11px;
+  color:var(--muted);font-weight:400;
+}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.online-pill{
+  display:flex;align-items:center;gap:5px;
+  font-size:11px;color:var(--muted);
+  background:var(--bg3);
+  padding:4px 10px;border-radius:20px;
+  border:1px solid var(--border);
+  transition:background 0.3s,border-color 0.3s;
+}
+.green-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--green);animation:pulse-dot 2s infinite;
+}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
 
-  @media (min-width: 600px) {
-    body { height: 100dvh; }
-    #app {
-      height: 100dvh;
-      max-height: 700px;
-      border-radius: 16px;
-    }
-  }
+.icon-btn{
+  background:none;border:1px solid var(--border);
+  color:var(--muted);width:32px;height:32px;
+  border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:all 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-  /* TOP BAR */
-  #topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 13px 18px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-  .logo {
-    font-family: 'Lora', serif;
-    font-size: 17px;
-    font-weight: 500;
-    color: var(--accent);
-    letter-spacing: 0.5px;
-  }
-  .online-pill {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 11px; color: var(--muted);
-    background: var(--bg3);
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-  }
-  .green-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--green);
-    animation: pulse-dot 2s infinite;
-  }
-  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+#screen{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
 
-  #screen { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+/* LANDING */
+#s-landing{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:14px;padding:28px 24px;text-align:center;
+  overflow-y:auto;
+}
+.landing-icon{
+  width:72px;height:72px;border-radius:50%;
+  background:var(--bg2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 
-  /* LANDING */
-  #s-landing {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 18px; padding: 40px 28px; text-align: center;
-  }
-  .landing-icon {
-    width: 64px; height: 64px; border-radius: 50%;
-    background: var(--bg2); border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-  }
-  #s-landing h1 {
-    font-family: 'Lora', serif;
-    font-size: 28px; color: var(--text);
-    letter-spacing: -0.5px; line-height: 1.2;
-  }
-  #s-landing h1 span { color: var(--accent); font-style: italic; }
-  #s-landing p { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 280px; }
-  .features { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-  .feat {
-    font-size: 11px; color: var(--muted);
-    border: 1px solid var(--border);
-    background: var(--bg3);
-    padding: 4px 12px; border-radius: 20px;
-  }
-  .btn-big {
-    background: var(--accent); color: #fff; border: none;
-    padding: 14px 44px; font-size: 14px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500; letter-spacing: 0.5px;
-    border-radius: 50px; cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-    box-shadow: 0 2px 8px rgba(45,106,79,0.25);
-  }
-  .btn-big:hover { background: var(--accent2); }
-  .btn-big:active { transform: scale(0.97); }
+.landing-headline{position:relative;overflow:hidden;}
+#s-landing h1{
+  font-family:'Lora',serif;font-size:28px;
+  color:var(--text);letter-spacing:-0.5px;line-height:1.2;
+}
+#s-landing h1 .highlight{
+  color:var(--accent);font-style:italic;
+  display:inline-block;
+  animation:slide-in 0.6s ease both;
+}
+@keyframes slide-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.ar-sub{
+  font-family:'Cairo',sans-serif;font-size:15px;
+  color:var(--muted);font-weight:500;margin-top:-6px;
+  animation:slide-in 0.7s 0.1s ease both;
+}
+#s-landing p{
+  font-size:13px;color:var(--muted);
+  line-height:1.7;max-width:300px;
+  animation:slide-in 0.7s 0.2s ease both;
+}
+.features{
+  display:flex;gap:6px;flex-wrap:wrap;justify-content:center;
+  animation:slide-in 0.7s 0.3s ease both;
+}
+.feat{
+  font-size:11px;color:var(--muted);
+  border:1px solid var(--border);
+  background:var(--bg3);
+  padding:4px 11px;border-radius:20px;
+  transition:background 0.3s,border-color 0.3s;
+}
 
-  /* WAITING */
-  #s-waiting {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 20px;
-  }
-  .spinner-wrap {
-    width: 60px; height: 60px; border-radius: 50%;
-    background: var(--bg2); border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    animation: breathe 1.8s ease-in-out infinite;
-  }
-  .spinner-wrap span { font-size: 22px; }
-  @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
-  #s-waiting p { font-size: 13px; color: var(--muted); }
-  .btn-ghost {
-    background: none; border: 1px solid var(--border);
-    color: var(--muted); padding: 8px 22px;
-    font-size: 12px; font-family: 'DM Sans', sans-serif;
-    border-radius: 50px; cursor: pointer; transition: all 0.15s;
-  }
-  .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+/* COUNTRY */
+.country-row{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  width:100%;max-width:320px;
+  animation:slide-in 0.7s 0.35s ease both;
+}
+.country-row label{font-size:12px;color:var(--muted);}
+.country-select-wrap{display:flex;gap:8px;width:100%;align-items:center;}
+#country-select{
+  flex:1;background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);padding:9px 12px;
+  font-size:13px;font-family:var(--font-main);
+  border-radius:10px;outline:none;cursor:pointer;
+  transition:background 0.3s,border-color 0.3s;
+}
+.btn-skip{
+  background:none;border:1px solid var(--border);
+  color:var(--muted);padding:9px 12px;
+  font-size:11px;font-family:var(--font-main);
+  border-radius:10px;cursor:pointer;white-space:nowrap;
+  transition:all 0.15s;
+}
+.btn-skip:hover{border-color:var(--muted);color:var(--text);}
 
-  /* CHAT */
-  #s-chat { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+.btn-big{
+  background:var(--accent);color:#fff;border:none;
+  padding:13px 40px;font-size:14px;
+  font-family:var(--font-main);
+  font-weight:500;letter-spacing:0.5px;
+  border-radius:50px;cursor:pointer;
+  transition:background 0.15s,transform 0.1s;
+  box-shadow:0 2px 12px rgba(45,106,79,0.3);
+  width:100%;max-width:320px;
+  animation:slide-in 0.7s 0.4s ease both;
+}
+.btn-big:hover{background:var(--accent2);}
+.btn-big:active{transform:scale(0.97);}
 
-  #chat-bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 10px 16px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-  .chat-who { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
-  .chat-who .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
-  .btn-next {
-    background: none; border: 1px solid var(--border);
-    color: var(--muted); padding: 5px 12px;
-    font-size: 11px; font-family: 'DM Sans', sans-serif;
-    border-radius: 50px; cursor: pointer; transition: all 0.15s;
-  }
-  .btn-next:hover { border-color: var(--accent); color: var(--accent); }
+/* WAITING */
+#s-waiting{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;
+}
+.spinner-wrap{
+  width:60px;height:60px;border-radius:50%;
+  background:var(--bg2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  animation:breathe 1.8s ease-in-out infinite;
+}
+.spinner-wrap span{font-size:22px;}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+#s-waiting p{font-size:13px;color:var(--muted);}
+.btn-ghost{
+  background:none;border:1px solid var(--border);
+  color:var(--muted);padding:8px 22px;
+  font-size:12px;font-family:var(--font-main);
+  border-radius:50px;cursor:pointer;transition:all 0.15s;
+}
+.btn-ghost:hover{border-color:var(--muted);color:var(--text);}
 
-  #messages {
-    flex: 1; overflow-y: auto; padding: 16px 14px;
-    display: flex; flex-direction: column; gap: 12px;
-    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
-    background: var(--bg);
-    min-height: 0;
-    -webkit-overflow-scrolling: touch;
-  }
+/* CONNECTING COUNTDOWN */
+#s-connecting{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:20px;
+}
+.conn-ring{
+  width:90px;height:90px;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+.conn-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+.conn-ring svg circle{fill:none;stroke:var(--border);stroke-width:4;}
+.conn-ring svg circle.cp{
+  stroke:var(--accent);stroke-linecap:round;
+  transition:stroke-dashoffset 1s linear;
+}
+#conn-num{font-size:28px;font-weight:700;color:var(--accent);position:relative;z-index:1;}
+#s-connecting p{font-size:13px;color:var(--muted);text-align:center;}
 
-  .msg { display: flex; flex-direction: column; max-width: 78%; gap: 2px; position: relative; }
-  .msg.them { align-self: flex-start; }
-  .msg.me { align-self: flex-end; }
+/* CHAT */
+#s-chat{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+#chat-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 14px;
+  background:var(--topbar-bg);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;transition:background 0.3s,border-color 0.3s;
+}
+.chat-who{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);}
+.chat-who .dot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.chat-who .flag{font-size:16px;line-height:1;}
+.btn-end{
+  background:var(--danger);color:#fff;border:none;
+  padding:5px 14px;font-size:11px;
+  font-family:var(--font-main);
+  border-radius:50px;cursor:pointer;
+  transition:opacity 0.15s;
+}
+.btn-end:hover{opacity:0.85;}
 
-  .bubble {
-    padding: 10px 14px; font-size: 13.5px;
-    line-height: 1.55; word-break: break-word;
-    position: relative; cursor: default;
-    -webkit-user-select: none; user-select: none;
-  }
-  .them .bubble {
-    background: var(--bubble-them);
-    color: var(--text);
-    border-radius: 18px 18px 18px 4px;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-  }
-  .me .bubble {
-    background: var(--bubble-me);
-    color: #fff;
-    border-radius: 18px 18px 4px 18px;
-  }
-  .ts { font-size: 10px; color: #b5aa9a; padding: 0 4px; }
-  .me .ts { text-align: right; }
+#messages{
+  flex:1;overflow-y:auto;padding:14px 12px;
+  display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+  background:var(--bg);min-height:0;
+  -webkit-overflow-scrolling:touch;
+  transition:background 0.3s;
+}
+.msg{display:flex;flex-direction:column;max-width:75%;gap:2px;position:relative;}
+.msg.them{align-self:flex-start;}
+.msg.me{align-self:flex-end;}
+@media(min-width:700px){.msg{max-width:60%;}}
 
-  /* REACTIONS */
-  .reaction-bar {
-    display: flex; gap: 4px; flex-wrap: wrap;
-    margin-top: 2px;
-  }
-  .me .reaction-bar { justify-content: flex-end; }
-  .react-pill {
-    background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 20px; padding: 2px 7px;
-    font-size: 12px; cursor: pointer;
-    display: flex; align-items: center; gap: 3px;
-    transition: transform 0.1s;
-    box-shadow: var(--shadow);
-    user-select: none;
-  }
-  .react-pill:hover { transform: scale(1.1); }
-  .react-pill .count { font-size: 10px; color: var(--muted); }
+.bubble{
+  padding:10px 14px;font-size:13.5px;
+  line-height:1.55;word-break:break-word;
+  position:relative;cursor:default;
+  -webkit-user-select:none;user-select:none;
+}
+.them .bubble{
+  background:var(--bubble-them);color:var(--text);
+  border-radius:18px 18px 18px 4px;
+  border:1px solid var(--border);box-shadow:var(--shadow);
+  transition:background 0.3s,border-color 0.3s;
+}
+.me .bubble{
+  background:var(--bubble-me);color:var(--bubble-me-text);
+  border-radius:18px 18px 4px 18px;
+}
+.ts{font-size:10px;color:#b5aa9a;padding:0 4px;}
+.me .ts{text-align:right;}
 
-  /* EMOJI PICKER */
-  .emoji-picker {
-    position: absolute;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 8px 10px;
-    display: flex; gap: 4px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    z-index: 100;
-    bottom: calc(100% + 6px);
-    animation: pop 0.12s ease;
-    touch-action: none;
-  }
-  .msg.me .emoji-picker { right: 0; }
-  .msg.them .emoji-picker { left: 0; }
-  @keyframes pop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
-  .emoji-btn {
-    background: none; border: none; cursor: pointer;
-    font-size: 22px; padding: 6px 7px; border-radius: 8px;
-    transition: background 0.1s, transform 0.1s;
-    line-height: 1;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-  .emoji-btn:hover { background: var(--bg2); transform: scale(1.2); }
-  .emoji-btn:active { transform: scale(1.3); background: var(--bg2); }
+.reaction-bar{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px;}
+.me .reaction-bar{justify-content:flex-end;}
+.react-pill{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;padding:2px 7px;font-size:12px;cursor:pointer;
+  display:flex;align-items:center;gap:3px;
+  transition:transform 0.1s;box-shadow:var(--shadow);user-select:none;
+}
+.react-pill:hover{transform:scale(1.1);}
+.react-pill .count{font-size:10px;color:var(--muted);}
 
-  .sys-msg {
-    align-self: center;
-    font-size: 11px; color: var(--muted);
-    padding: 4px 12px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-  }
+.emoji-picker{
+  position:absolute;background:var(--bg3);
+  border:1px solid var(--border);border-radius:14px;
+  padding:8px 10px;display:flex;gap:4px;
+  box-shadow:0 6px 24px rgba(0,0,0,0.18);
+  z-index:100;bottom:calc(100% + 6px);
+  animation:pop 0.12s ease;touch-action:none;
+}
+.msg.me .emoji-picker{right:0;}
+.msg.them .emoji-picker{left:0;}
+@keyframes pop{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+.emoji-btn{
+  background:none;border:none;cursor:pointer;font-size:22px;
+  padding:6px;border-radius:8px;line-height:1;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  min-width:38px;min-height:38px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 0.1s,transform 0.1s;
+}
+.emoji-btn:hover{background:var(--bg2);transform:scale(1.2);}
+.emoji-btn:active{transform:scale(1.3);}
 
-  .typing-indicator {
-    display: flex; align-items: center; gap: 4px;
-    padding: 11px 14px;
-    background: var(--bubble-them);
-    border: 1px solid var(--border);
-    border-radius: 18px 18px 18px 4px;
-    width: fit-content;
-    box-shadow: var(--shadow);
-  }
-  .typing-indicator span {
-    width: 5px; height: 5px; border-radius: 50%; background: #bbb;
-    animation: dot-blink 1.3s infinite;
-  }
-  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes dot-blink {
-    0%,80%,100%{opacity:0.3;transform:translateY(0)}
-    40%{opacity:1;transform:translateY(-3px)}
-  }
+.sys-msg{
+  align-self:center;font-size:11px;color:var(--muted);
+  padding:4px 12px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:20px;
+  text-align:center;transition:background 0.3s,border-color 0.3s;
+}
+.typing-indicator{
+  display:flex;align-items:center;gap:4px;padding:11px 14px;
+  background:var(--bubble-them);border:1px solid var(--border);
+  border-radius:18px 18px 18px 4px;width:fit-content;box-shadow:var(--shadow);
+}
+.typing-indicator span{
+  width:5px;height:5px;border-radius:50%;background:#bbb;
+  animation:dot-blink 1.3s infinite;
+}
+.typing-indicator span:nth-child(2){animation-delay:0.2s;}
+.typing-indicator span:nth-child(3){animation-delay:0.4s;}
+@keyframes dot-blink{0%,80%,100%{opacity:0.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
 
-  #input-row {
-    display: flex; gap: 8px; padding: 10px 12px;
-    border-top: 1px solid var(--border);
-    background: var(--bg2); flex-shrink: 0;
-    align-items: flex-end;
-  }
-  #msg-input {
-    flex: 1; background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--text); padding: 10px 14px;
-    font-size: 16px; font-family: 'DM Sans', sans-serif;
-    border-radius: 22px; outline: none; resize: none;
-    transition: border-color 0.15s;
-    min-height: 42px; max-height: 100px;
-    line-height: 1.4;
-    box-shadow: var(--shadow);
-  }
-  #msg-input:focus { border-color: var(--accent); }
-  #msg-input::placeholder { color: #c0b8ae; }
-  .btn-send {
-    background: var(--accent); color: #fff; border: none;
-    width: 42px; height: 42px; border-radius: 50%;
-    font-size: 18px; cursor: pointer; flex-shrink: 0;
-    transition: background 0.15s, transform 0.1s;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 8px rgba(45,106,79,0.3);
-    -webkit-tap-highlight-color: transparent;
-  }
-  .btn-send:hover { background: var(--accent2); }
-  .btn-send:active { transform: scale(0.92); }
-  .btn-send svg { pointer-events: none; }
+#input-row{
+  display:flex;gap:8px;padding:10px 12px;
+  border-top:1px solid var(--border);
+  background:var(--topbar-bg);flex-shrink:0;align-items:flex-end;
+  transition:background 0.3s,border-color 0.3s;
+}
+#msg-input{
+  flex:1;background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);padding:10px 14px;
+  font-size:16px;font-family:var(--font-main);
+  border-radius:22px;outline:none;resize:none;
+  transition:border-color 0.15s,background 0.3s;
+  min-height:42px;max-height:120px;line-height:1.4;
+  box-shadow:var(--shadow);
+}
+#msg-input:focus{border-color:var(--accent);}
+#msg-input::placeholder{color:#c0b8ae;}
+.btn-send{
+  background:var(--accent);color:#fff;border:none;
+  width:42px;height:42px;border-radius:50%;
+  font-size:18px;cursor:pointer;flex-shrink:0;
+  transition:background 0.15s,transform 0.1s;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(45,106,79,0.3);
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-send:hover{background:var(--accent2);}
+.btn-send:active{transform:scale(0.92);}
 
-  /* DISCONNECTED */
-  #s-disco {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 16px;
-  }
-  #s-disco .disco-icon { font-size: 32px; }
-  #s-disco p { font-size: 13px; color: var(--muted); }
-  .btn-row { display: flex; gap: 10px; }
+/* DISCO / ENDED */
+#s-disco{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:16px;padding:28px;
+}
+#s-disco .disco-icon{font-size:36px;animation:float 3s ease-in-out infinite;}
+#s-disco p{font-size:14px;color:var(--muted);text-align:center;line-height:1.6;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
 
-  /* INACTIVE TIMEOUT OVERLAY */
-  #inactive-overlay {
-    display: none;
-    position: absolute;
-    inset: 0;
-    background: rgba(245,240,232,0.92);
-    z-index: 200;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    text-align: center;
-    padding: 28px;
-    backdrop-filter: blur(2px);
-  }
-  #inactive-overlay.visible { display: flex; }
-  #inactive-overlay .inactive-icon { font-size: 36px; }
-  #inactive-overlay p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-  #inactive-overlay strong { color: var(--text); }
+/* INACTIVE OVERLAY */
+#inactive-overlay{
+  display:none;position:absolute;inset:0;
+  background:var(--overlay);z-index:200;
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;text-align:center;padding:28px;
+  backdrop-filter:blur(4px);
+}
+#inactive-overlay.visible{display:flex;}
+.ina-icon{font-size:38px;}
+#inactive-overlay p{font-size:14px;color:var(--muted);line-height:1.7;max-width:280px;}
+#inactive-overlay strong{color:var(--text);}
+#cd-ring{
+  width:80px;height:80px;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+#cd-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
+#cd-ring svg circle{fill:none;stroke:var(--border);stroke-width:5;}
+#cd-ring svg circle.cdp{stroke:var(--danger);stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
+#cd-num{font-size:24px;font-weight:700;color:var(--danger);position:relative;z-index:1;}
+
+/* SETTINGS PANEL */
+#settings-panel{
+  display:none;position:absolute;
+  top:54px;right:12px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:16px;padding:18px;
+  z-index:300;
+  box-shadow:0 8px 32px rgba(0,0,0,0.15);
+  min-width:240px;
+  animation:pop 0.15s ease;
+}
+#settings-panel.open{display:block;}
+.settings-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;letter-spacing:0.5px;}
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;gap:10px;
+}
+.setting-label{font-size:12px;color:var(--muted);}
+.theme-btns{display:flex;gap:6px;}
+.theme-dot{
+  width:24px;height:24px;border-radius:50%;
+  border:2px solid transparent;cursor:pointer;
+  transition:transform 0.1s,border-color 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.theme-dot:hover{transform:scale(1.15);}
+.theme-dot.active{border-color:var(--accent);}
+.theme-dot.td-light{background:linear-gradient(135deg,#f5f0e8,#2d6a4f);}
+.theme-dot.td-dark{background:linear-gradient(135deg,#111318,#52b788);}
+.theme-dot.td-blink{background:linear-gradient(135deg,#0c0c0c,#00ff88);}
+.lang-btns{display:flex;gap:6px;}
+.lang-btn{
+  font-size:18px;cursor:pointer;
+  padding:4px 8px;border-radius:8px;
+  border:2px solid transparent;
+  transition:border-color 0.15s,transform 0.1s;
+  -webkit-tap-highlight-color:transparent;
+  background:none;
+}
+.lang-btn:hover{transform:scale(1.1);}
+.lang-btn.active{border-color:var(--accent);}
+.country-setting{width:100%;}
+#settings-country{
+  width:100%;background:var(--bg2);
+  border:1px solid var(--border);color:var(--text);
+  padding:7px 10px;font-size:12px;
+  font-family:var(--font-main);
+  border-radius:8px;outline:none;cursor:pointer;
+  transition:background 0.3s,border-color 0.3s;
+}
+.divider{height:1px;background:var(--border);margin:6px 0 12px;}
+
+/* Night mode toggle */
+.toggle{
+  position:relative;width:40px;height:22px;
+  display:inline-block;cursor:pointer;flex-shrink:0;
+}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;inset:0;background:var(--border);
+  border-radius:22px;transition:background 0.25s;
+}
+.toggle-slider::before{
+  content:'';position:absolute;
+  width:16px;height:16px;border-radius:50%;
+  background:#fff;left:3px;top:3px;
+  transition:transform 0.25s;
+}
+.toggle input:checked + .toggle-slider{background:var(--accent);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(18px);}
 </style>
 </head>
 <body>
-
-<div id="app" style="position:relative;">
+<div id="app">
+  <!-- TOP BAR -->
   <div id="topbar">
-    <div class="logo">Stranger</div>
-    <div class="online-pill">
-      <div class="green-dot"></div>
-      <span id="online-count">0</span> online
+    <div class="logo" onclick="goHome()">
+      <span class="en-name">Chatcha</span>
+      <span class="ar-name">شاتشا</span>
+    </div>
+    <div class="topbar-right">
+      <div class="online-pill">
+        <div class="green-dot"></div>
+        <span id="online-count">0</span>&nbsp;<span id="lbl-online">online</span>
+      </div>
+      <button class="icon-btn" id="night-btn" onclick="toggleNight()" title="Night mode">🌙</button>
+      <button class="icon-btn" onclick="toggleSettings()" title="Settings">⚙️</button>
     </div>
   </div>
-  <div id="screen"></div>
 
-  <!-- Inactive overlay -->
-  <div id="inactive-overlay">
-    <div class="inactive-icon">💤</div>
-    <p><strong>Still there?</strong><br>You've been inactive for 3 minutes.<br>Your stranger is waiting...</p>
-    <button class="btn-big" onclick="dismissInactive()">I'm back</button>
+  <!-- SETTINGS PANEL -->
+  <div id="settings-panel">
+    <div class="settings-title" id="lbl-settings">Settings</div>
+
+    <div class="setting-row">
+      <span class="setting-label" id="lbl-theme">Theme</span>
+      <div class="theme-btns">
+        <div class="theme-dot td-light active" id="td-light" onclick="setTheme('light')" title="Light"></div>
+        <div class="theme-dot td-dark" id="td-dark" onclick="setTheme('dark')" title="Dark"></div>
+        <div class="theme-dot td-blink" id="td-blink" onclick="setTheme('blink')" title="Blink"></div>
+      </div>
+    </div>
+
+    <div class="setting-row">
+      <span class="setting-label" id="lbl-lang">Language</span>
+      <div class="lang-btns">
+        <button class="lang-btn" id="lb-en" onclick="setLang('en')" title="English">🏴󠁧󠁢󠁥󠁮󠁧󠁿</button>
+        <button class="lang-btn" id="lb-ar" onclick="setLang('ar')" title="العربية">🇪🇬</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+      <span class="setting-label" id="lbl-country-set">Your country</span>
+      <select id="settings-country" onchange="updateMyCountry()">
+        <option value="">— Skip —</option>
+      </select>
+    </div>
   </div>
+
+  <!-- INACTIVE OVERLAY -->
+  <div id="inactive-overlay">
+    <div class="ina-icon">💤</div>
+    <p id="ina-msg"><strong>Still there?</strong><br>You'll be disconnected in:</p>
+    <div id="cd-ring">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="34"/>
+        <circle class="cdp" id="cdp" cx="40" cy="40" r="34"
+          stroke-dasharray="213.6" stroke-dashoffset="0"/>
+      </svg>
+      <span id="cd-num">60</span>
+    </div>
+    <button class="btn-big" onclick="dismissInactive()" style="max-width:200px;" id="btn-imback">I'm back!</button>
+  </div>
+
+  <div id="screen"></div>
 </div>
 
 <script>
 const socket = io();
-let typingTimer = null;
-let iAmTyping = false;
-let typingEl = null;
-let msgCounter = 0;
-let openPickerId = null;
-let isMobile = ('ontouchstart' in window);
+const isMobile = 'ontouchstart' in window;
+const CD_CIRC = 213.6; // 2*pi*34
+const CONN_CIRC = 226.2; // 2*pi*36
 
-// ── Inactivity timer (3 minutes) ──────────────────────────
-let inactiveTimer = null;
-const INACTIVE_MS = 3 * 60 * 1000;
+// ── Persistent state ───────────────────────────────────────
+let currentLang = localStorage.getItem('lang') ||
+  (navigator.language||'').toLowerCase().startsWith('ar') ? 'ar' : 'en';
+let currentTheme = localStorage.getItem('theme') || 'light';
+let nightOn = localStorage.getItem('night') === '1';
+let myMeta = JSON.parse(localStorage.getItem('meta')||'{}');
 
-function resetInactiveTimer() {
-  clearTimeout(inactiveTimer);
-  const overlay = document.getElementById('inactive-overlay');
-  if (overlay) overlay.classList.remove('visible');
-  inactiveTimer = setTimeout(() => {
-    const overlay = document.getElementById('inactive-overlay');
-    if (overlay && document.getElementById('messages')) {
-      overlay.classList.add('visible');
-    }
-  }, INACTIVE_MS);
+// ── Translations ───────────────────────────────────────────
+const T = {
+  en:{
+    headline:'talk to a',highlight:'stranger.',
+    arsub:'شاتشا • دردشه عربيه',
+    sub:'anonymous real-time chat. no login. no history.',
+    f1:'anonymous',f2:'real people',f3:'skip anytime',
+    clabel:'Your country (optional):',cskip:'Skip',
+    start:'Start chatting',
+    looking:'looking for someone...',cancel:'cancel',
+    connMsg:'Connecting your chat...',
+    chatWith:'chatting with',stranger:'a stranger',
+    end:'End',
+    discoMsg:'The stranger has left.',discoYou:'You ended the chat.',
+    findNew:'Chat again',
+    connected:'Connected to a stranger ✦',
+    online:'online',
+    stillThere:'Still there?',discWarn:"You'll be disconnected in:",
+    imback:"I'm back!",sayHi:'Say something...',
+    settings:'Settings',theme:'Theme',language:'Language',countryset:'Your country',
+    waiting5:'Waiting for a match...',
+    lbl_night:'Night mode',
+  },
+  ar:{
+    headline:'دردش مع',highlight:'غريب.',
+    arsub:'Chatcha • شاتشا',
+    sub:'دردشه مجهولة مجانية. بدون تسجيل. بدون تاريخ.',
+    f1:'مجهول',f2:'أشخاص حقيقيون',f3:'تخطى متى تريد',
+    clabel:'بلدك (اختياري):',cskip:'تخطى',
+    start:'ابدأ الدردشة',
+    looking:'جاري البحث...',cancel:'إلغاء',
+    connMsg:'جاري الاتصال...',
+    chatWith:'تتحدث مع',stranger:'غريب',
+    end:'إنهاء',
+    discoMsg:'غادر الغريب المحادثة.',discoYou:'أنهيت المحادثة.',
+    findNew:'دردشة جديدة',
+    connected:'تم الاتصال بغريب ✦',
+    online:'متصل',
+    stillThere:'هل أنت هناك؟',discWarn:'سيتم قطع اتصالك خلال:',
+    imback:'أنا هنا!',sayHi:'قل شيئاً...',
+    settings:'الإعدادات',theme:'المظهر',language:'اللغة',countryset:'بلدك',
+    waiting5:'في انتظار شخص...',
+    lbl_night:'الوضع الليلي',
+  }
+};
+let t = T[currentLang];
+
+// ── Countries ──────────────────────────────────────────────
+const COUNTRIES=[
+  {code:'SA',flag:'🇸🇦',en:'Saudi Arabia',ar:'السعودية'},
+  {code:'EG',flag:'🇪🇬',en:'Egypt',ar:'مصر'},
+  {code:'AE',flag:'🇦🇪',en:'UAE',ar:'الإمارات'},
+  {code:'KW',flag:'🇰🇼',en:'Kuwait',ar:'الكويت'},
+  {code:'QA',flag:'🇶🇦',en:'Qatar',ar:'قطر'},
+  {code:'BH',flag:'🇧🇭',en:'Bahrain',ar:'البحرين'},
+  {code:'OM',flag:'🇴🇲',en:'Oman',ar:'عُمان'},
+  {code:'JO',flag:'🇯🇴',en:'Jordan',ar:'الأردن'},
+  {code:'LB',flag:'🇱🇧',en:'Lebanon',ar:'لبنان'},
+  {code:'SY',flag:'🇸🇾',en:'Syria',ar:'سوريا'},
+  {code:'IQ',flag:'🇮🇶',en:'Iraq',ar:'العراق'},
+  {code:'YE',flag:'🇾🇪',en:'Yemen',ar:'اليمن'},
+  {code:'LY',flag:'🇱🇾',en:'Libya',ar:'ليبيا'},
+  {code:'TN',flag:'🇹🇳',en:'Tunisia',ar:'تونس'},
+  {code:'DZ',flag:'🇩🇿',en:'Algeria',ar:'الجزائر'},
+  {code:'MA',flag:'🇲🇦',en:'Morocco',ar:'المغرب'},
+  {code:'SD',flag:'🇸🇩',en:'Sudan',ar:'السودان'},
+  {code:'PS',flag:'🇵🇸',en:'Palestine',ar:'فلسطين'},
+  {code:'OTHER',flag:'🌍',en:'Other',ar:'أخرى'},
+];
+function countryName(code){
+  const c=COUNTRIES.find(x=>x.code===code);
+  return c?(currentLang==='ar'?c.ar:c.en):'';
+}
+function buildOptions(selectEl, selectedCode){
+  selectEl.innerHTML=`<option value="">— ${t.cskip} —</option>`;
+  COUNTRIES.forEach(c=>{
+    const o=document.createElement('option');
+    o.value=c.code;
+    o.textContent=`${c.flag} ${currentLang==='ar'?c.ar:c.en}`;
+    if(c.code===selectedCode) o.selected=true;
+    selectEl.appendChild(o);
+  });
 }
 
-function dismissInactive() {
-  const overlay = document.getElementById('inactive-overlay');
-  if (overlay) overlay.classList.remove('visible');
-  resetInactiveTimer();
+// ── Apply lang/theme on load ───────────────────────────────
+function applyLang(lang){
+  currentLang=lang;
+  t=T[lang];
+  localStorage.setItem('lang',lang);
+  const root=document.getElementById('html-root');
+  root.setAttribute('lang',lang);
+  root.setAttribute('dir',lang==='ar'?'rtl':'ltr');
+  // update labels
+  const ids={
+    'lbl-online':'online','lbl-settings':'settings',
+    'lbl-theme':'theme','lbl-lang':'language',
+    'lbl-country-set':'countryset','btn-imback':'imback',
+  };
+  Object.entries(ids).forEach(([id,key])=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=t[key];
+  });
+  document.getElementById('lb-en').classList.toggle('active',lang==='en');
+  document.getElementById('lb-ar').classList.toggle('active',lang==='ar');
+  // rebuild country dropdowns
+  const sc=document.getElementById('settings-country');
+  if(sc) buildOptions(sc,myMeta.country||'');
 }
 
-// Track any activity
-['touchstart','touchend','mousemove','keydown','click'].forEach(evt => {
-  document.addEventListener(evt, resetInactiveTimer, { passive: true });
+function applyTheme(theme){
+  currentTheme=theme;
+  localStorage.setItem('theme',theme);
+  // night mode stacks on top
+  const eff = nightOn && theme!=='blink' ? 'dark' : theme;
+  document.body.setAttribute('data-theme', eff==='light'&&!nightOn?'':eff);
+  ['light','dark','blink'].forEach(th=>{
+    document.getElementById('td-'+th)?.classList.toggle('active',th===theme);
+  });
+}
+
+function toggleNight(){
+  nightOn=!nightOn;
+  localStorage.setItem('night',nightOn?'1':'0');
+  document.getElementById('night-btn').textContent=nightOn?'☀️':'🌙';
+  applyTheme(currentTheme);
+}
+
+function setTheme(th){ applyTheme(th); }
+function setLang(lang){ applyLang(lang); }
+
+function toggleSettings(){
+  document.getElementById('settings-panel').classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  const sp=document.getElementById('settings-panel');
+  if(sp.classList.contains('open')&&!e.target.closest('#settings-panel')&&!e.target.closest('.icon-btn[onclick*="Settings"]')&&!e.target.closest('[onclick="toggleSettings()"]')){
+    sp.classList.remove('open');
+  }
 });
 
-const EMOJIS = ['😂','❤️','😮','😢','👏','🔥'];
+function updateMyCountry(){
+  const sel=document.getElementById('settings-country');
+  if(!sel) return;
+  const c=COUNTRIES.find(x=>x.code===sel.value);
+  myMeta=c?{country:c.code,flag:c.flag}:{country:'',flag:''};
+  localStorage.setItem('meta',JSON.stringify(myMeta));
+  socket.emit('set_meta',myMeta);
+}
 
-// ── Screens ───────────────────────────────────────────────
-function showLanding() {
-  clearTimeout(inactiveTimer);
-  document.getElementById('screen').innerHTML = `
+function goHome(){
+  socket.emit('leave');
+  inChatSession=false;
+  clearAll();
+  showLanding();
+}
+
+// ── Online count ───────────────────────────────────────────
+let realOnline=0;
+let fakeOffset=Math.floor(Math.random()*300)+99;
+function updateOnlineDisplay(){
+  document.getElementById('online-count').textContent=realOnline+fakeOffset;
+}
+setInterval(()=>{
+  const d=Math.floor(Math.random()*21)-10;
+  fakeOffset=Math.max(99,Math.min(800,fakeOffset+d));
+  updateOnlineDisplay();
+},5000);
+socket.on('user_count',n=>{ realOnline=n; updateOnlineDisplay(); });
+socket.on('ping_check',()=>socket.emit('pong_check'));
+
+// ── Inactivity ─────────────────────────────────────────────
+let inactiveWarningTimer=null, countdownInterval=null, countdownSecs=60;
+let inChatSession=false;
+
+function resetInactiveTimer(){
+  clearTimeout(inactiveWarningTimer);
+  clearInterval(countdownInterval);
+  hideInactiveOverlay();
+  if(!inChatSession) return;
+  inactiveWarningTimer=setTimeout(startCountdown,60*1000);
+}
+function startCountdown(){
+  countdownSecs=60;
+  showInactiveOverlay();
+  updateCdRing(60);
+  countdownInterval=setInterval(()=>{
+    countdownSecs--;
+    updateCdRing(countdownSecs);
+    if(countdownSecs<=0){
+      clearInterval(countdownInterval);
+      socket.emit('leave');
+      hideInactiveOverlay();
+      inChatSession=false;
+      showDisconnected(t.discoYou,false);
+    }
+  },1000);
+}
+function updateCdRing(s){
+  document.getElementById('cd-num').textContent=s;
+  const offset=CD_CIRC*(1-s/60);
+  document.getElementById('cdp').style.strokeDashoffset=offset;
+}
+function showInactiveOverlay(){ document.getElementById('inactive-overlay').classList.add('visible'); }
+function hideInactiveOverlay(){ document.getElementById('inactive-overlay').classList.remove('visible'); }
+function dismissInactive(){ clearInterval(countdownInterval); hideInactiveOverlay(); resetInactiveTimer(); }
+
+['touchstart','mousemove','keydown','click'].forEach(ev=>{
+  document.addEventListener(ev,()=>{ if(inChatSession) resetInactiveTimer(); },{passive:true});
+});
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&inChatSession) resetInactiveTimer();
+});
+
+// ── Screens ────────────────────────────────────────────────
+function clearAll(){
+  clearTimeout(inactiveWarningTimer);
+  clearInterval(countdownInterval);
+  hideInactiveOverlay();
+}
+
+function showLanding(){
+  inChatSession=false; clearAll();
+  document.getElementById('settings-panel').classList.remove('open');
+  // rebuild settings country
+  const sc=document.getElementById('settings-country');
+  if(sc) buildOptions(sc,myMeta.country||'');
+
+  document.getElementById('screen').innerHTML=`
     <div id="s-landing">
       <div class="landing-icon">💬</div>
-      <h1>talk to a <span>stranger.</span></h1>
-      <p>anonymous real-time chat with a random person. no login. no history.</p>
-      <div class="features">
-        <div class="feat">anonymous</div>
-        <div class="feat">real people</div>
-        <div class="feat">skip anytime</div>
+      <div class="landing-headline">
+        <h1>${t.headline} <span class="highlight">${t.highlight}</span></h1>
       </div>
-      <button class="btn-big" onclick="findMatch()">Start chatting</button>
+      <p class="ar-sub">${t.arsub}</p>
+      <p>${t.sub}</p>
+      <div class="features">
+        <div class="feat">${t.f1}</div>
+        <div class="feat">${t.f2}</div>
+        <div class="feat">${t.f3}</div>
+      </div>
+      <div class="country-row">
+        <label>${t.clabel}</label>
+        <div class="country-select-wrap">
+          <select id="country-select"></select>
+          <button class="btn-skip" onclick="document.getElementById('country-select').value=''">${t.cskip}</button>
+        </div>
+      </div>
+      <button class="btn-big" onclick="findMatch()">${t.start}</button>
     </div>`;
+  buildOptions(document.getElementById('country-select'), myMeta.country||'');
 }
 
-function showWaiting() {
-  clearTimeout(inactiveTimer);
-  document.getElementById('screen').innerHTML = `
+function showWaiting(retryIn){
+  inChatSession=false; clearAll();
+  const msg = retryIn
+    ? (currentLang==='ar'?`إعادة المحاولة خلال ${retryIn} ثوانٍ...`:`Retrying in ${retryIn}s...`)
+    : t.looking;
+  document.getElementById('screen').innerHTML=`
     <div id="s-waiting">
       <div class="spinner-wrap"><span>🔍</span></div>
-      <p>looking for someone...</p>
-      <button class="btn-ghost" onclick="cancelSearch()">cancel</button>
+      <p id="wait-msg">${msg}</p>
+      <button class="btn-ghost" onclick="cancelSearch()">${t.cancel}</button>
     </div>`;
 }
 
-function showChat() {
-  msgCounter = 0;
-  document.getElementById('screen').innerHTML = `
+function showConnecting(sec){
+  document.getElementById('screen').innerHTML=`
+    <div id="s-connecting">
+      <div class="conn-ring">
+        <svg width="90" height="90" viewBox="0 0 90 90">
+          <circle cx="45" cy="45" r="36"/>
+          <circle class="cp" id="connp" cx="45" cy="45" r="36"
+            stroke-dasharray="${CONN_CIRC}" stroke-dashoffset="0"/>
+        </svg>
+        <span id="conn-num">${sec}</span>
+      </div>
+      <p>${t.connMsg}</p>
+    </div>`;
+  let s=sec;
+  const iv=setInterval(()=>{
+    s--;
+    const el=document.getElementById('conn-num');
+    if(el) el.textContent=s;
+    const cp=document.getElementById('connp');
+    if(cp) cp.style.strokeDashoffset=CONN_CIRC*(1-s/sec);
+    if(s<=0) clearInterval(iv);
+  },1000);
+}
+
+let partnerMeta={};
+function showChat(pm){
+  partnerMeta=pm||{};
+  msgCounter=0;
+  const flagHtml=partnerMeta.flag?`<span class="flag">${partnerMeta.flag}</span>`:'';
+  const cname=partnerMeta.country?` (${countryName(partnerMeta.country)})`:'';
+  document.getElementById('screen').innerHTML=`
     <div id="s-chat">
       <div id="chat-bar">
-        <div class="chat-who"><div class="dot"></div> chatting with a stranger</div>
-        <button class="btn-next" onclick="nextStranger()">next →</button>
+        <div class="chat-who">
+          <div class="dot"></div>${flagHtml}
+          ${t.chatWith} ${t.stranger}${cname}
+        </div>
+        <button class="btn-end" onclick="endChat()">${t.end}</button>
       </div>
       <div id="messages"></div>
       <div id="input-row">
-        <textarea id="msg-input" placeholder="say something..." rows="1"
-          oninput="autoResize(this); handleTyping()"
+        <textarea id="msg-input" placeholder="${t.sayHi}" rows="1"
+          oninput="autoResize(this);handleTyping()"
           onkeydown="handleKey(event)"></textarea>
-        <button class="btn-send" onclick="sendMsg()" aria-label="send">
+        <button class="btn-send" onclick="sendMsg()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
@@ -463,295 +892,255 @@ function showChat() {
         </button>
       </div>
     </div>`;
-  sysMsg('you are now connected to a stranger ✦');
-  if (!isMobile) document.getElementById('msg-input').focus();
-  document.addEventListener('click', closePickerOnOutside);
+  sysMsg(t.connected);
+  if(!isMobile) document.getElementById('msg-input').focus();
+  document.addEventListener('click',closePickerOnOutside);
+  inChatSession=true;
   resetInactiveTimer();
 }
 
-function showDisconnected() {
-  clearTimeout(inactiveTimer);
-  document.removeEventListener('click', closePickerOnOutside);
-  document.getElementById('screen').innerHTML = `
+function showDisconnected(msg,showRetry=true){
+  inChatSession=false; clearAll();
+  document.removeEventListener('click',closePickerOnOutside);
+  document.getElementById('screen').innerHTML=`
     <div id="s-disco">
       <div class="disco-icon">👋</div>
-      <p>stranger has disconnected.</p>
+      <p>${msg||t.discoMsg}</p>
       <div class="btn-row">
-        <button class="btn-big" onclick="findMatch()">find new stranger</button>
+        <button class="btn-big" onclick="findMatch()" style="max-width:240px;">${t.findNew}</button>
+        <button class="btn-ghost" onclick="showLanding()">${currentLang==='ar'?'الرئيسية':'Home'}</button>
       </div>
     </div>`;
 }
 
-// ── Chat helpers ──────────────────────────────────────────
-function sysMsg(text) {
-  const msgs = document.getElementById('messages');
-  if (!msgs) return;
-  const d = document.createElement('div');
-  d.className = 'sys-msg'; d.textContent = text;
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
+function endChat(){
+  socket.emit('leave');
+  inChatSession=false;
+  clearAll();
+  showDisconnected(t.discoYou,false);
+  // Try to re-queue after 5s
+  setTimeout(()=>{ /* user chooses via button */ }, 5000);
 }
 
-function appendMsg(who, text) {
-  const msgs = document.getElementById('messages');
-  if (!msgs) return;
-  const id = 'msg-' + (++msgCounter);
-  const now = new Date();
-  const ts = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
-  const d = document.createElement('div');
-  d.className = `msg ${who}`;
-  d.dataset.id = id;
+function cancelSearch(){ socket.emit('leave'); showLanding(); }
 
-  const bubble = document.createElement('div');
-  bubble.className = 'bubble';
-  bubble.innerHTML = esc(text);
+// ── Chat helpers ───────────────────────────────────────────
+let msgCounter=0;
+function sysMsg(txt){
+  const m=document.getElementById('messages');
+  if(!m) return;
+  const d=document.createElement('div');
+  d.className='sys-msg';d.textContent=txt;
+  m.appendChild(d);m.scrollTop=m.scrollHeight;
+}
 
-  // Desktop: hover to show picker
-  if (!isMobile) {
-    bubble.addEventListener('mouseenter', () => showPicker(id));
-    bubble.addEventListener('mouseleave', () => startHidePicker(id));
+function appendMsg(who,text,customId){
+  const m=document.getElementById('messages');
+  if(!m) return;
+  const id=customId||('msg-'+(++msgCounter));
+  const now=new Date();
+  const ts=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  const d=document.createElement('div');
+  d.className=`msg ${who}`;d.dataset.id=id;
+  const bubble=document.createElement('div');
+  bubble.className='bubble';
+  bubble.innerHTML=esc(text);
+  if(!isMobile){
+    bubble.addEventListener('mouseenter',()=>showPicker(id));
+    bubble.addEventListener('mouseleave',()=>startHidePicker(id));
+  } else {
+    bubble.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();togglePicker(id);});
   }
-
-  // Mobile: tap bubble to toggle picker
-  if (isMobile) {
-    bubble.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      togglePicker(id);
-    });
-  }
-
-  const rb = document.createElement('div');
-  rb.className = 'reaction-bar';
-  rb.id = 'rb-' + id;
-
-  const tsEl = document.createElement('div');
-  tsEl.className = 'ts';
-  tsEl.textContent = ts;
-
-  d.appendChild(bubble);
-  d.appendChild(rb);
-  d.appendChild(tsEl);
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
+  const rb=document.createElement('div');rb.className='reaction-bar';rb.id='rb-'+id;
+  const tsEl=document.createElement('div');tsEl.className='ts';tsEl.textContent=ts;
+  d.appendChild(bubble);d.appendChild(rb);d.appendChild(tsEl);
+  m.appendChild(d);m.scrollTop=m.scrollHeight;
   return id;
 }
 
-// ── Emoji picker ──────────────────────────────────────────
-let hidePickerTimer = null;
+// ── Emoji picker ───────────────────────────────────────────
+const EMOJIS=['😂','❤️','😮','😢','👏','🔥'];
+let openPickerId=null,hidePickerTimer=null;
 
-function showPicker(msgId) {
+function showPicker(msgId){
   clearTimeout(hidePickerTimer);
-  if (openPickerId === msgId) return;
+  if(openPickerId===msgId) return;
   closeAllPickers();
-  const msg = document.querySelector(`[data-id="${msgId}"]`);
-  if (!msg) return;
-  const bubble = msg.querySelector('.bubble');
-  const picker = document.createElement('div');
-  picker.className = 'emoji-picker';
-  picker.id = 'picker-' + msgId;
-
-  if (!isMobile) {
-    picker.addEventListener('mouseenter', () => clearTimeout(hidePickerTimer));
-    picker.addEventListener('mouseleave', () => startHidePicker(msgId));
+  const msg=document.querySelector(`[data-id="${msgId}"]`);
+  if(!msg) return;
+  const bubble=msg.querySelector('.bubble');
+  const picker=document.createElement('div');
+  picker.className='emoji-picker';picker.id='picker-'+msgId;
+  if(!isMobile){
+    picker.addEventListener('mouseenter',()=>clearTimeout(hidePickerTimer));
+    picker.addEventListener('mouseleave',()=>startHidePicker(msgId));
   }
-
-  EMOJIS.forEach(emoji => {
-    const btn = document.createElement('button');
-    btn.className = 'emoji-btn';
-    btn.textContent = emoji;
-    btn.setAttribute('type', 'button');
-
-    if (isMobile) {
-      btn.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        sendReaction(msgId, emoji);
-        closeAllPickers();
-      });
+  EMOJIS.forEach(emoji=>{
+    const btn=document.createElement('button');
+    btn.className='emoji-btn';btn.textContent=emoji;btn.type='button';
+    if(isMobile){
+      btn.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();sendReaction(msgId,emoji);closeAllPickers();});
     } else {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        sendReaction(msgId, emoji);
-        closeAllPickers();
-      });
+      btn.addEventListener('click',e=>{e.stopPropagation();sendReaction(msgId,emoji);closeAllPickers();});
     }
     picker.appendChild(btn);
   });
-
   bubble.appendChild(picker);
-  openPickerId = msgId;
+  openPickerId=msgId;
 }
+function startHidePicker(id){ hidePickerTimer=setTimeout(()=>{if(openPickerId===id)closeAllPickers();},400); }
+function closeAllPickers(){ document.querySelectorAll('.emoji-picker').forEach(p=>p.remove());openPickerId=null; }
+function togglePicker(id){ if(openPickerId===id){closeAllPickers();return;}showPicker(id); }
+function closePickerOnOutside(e){ if(!e.target.closest('.emoji-picker')&&!e.target.closest('.bubble')) closeAllPickers(); }
+document.addEventListener('touchend',e=>{
+  if(openPickerId&&!e.target.closest('.emoji-picker')&&!e.target.closest('.bubble')) closeAllPickers();
+},{passive:true});
 
-function startHidePicker(msgId) {
-  hidePickerTimer = setTimeout(() => {
-    if (openPickerId === msgId) closeAllPickers();
-  }, 300);
+function sendReaction(msgId,emoji){
+  socket.emit('reaction',{msgId,emoji});
+  applyReaction(msgId,emoji);
 }
-
-function closeAllPickers() {
-  document.querySelectorAll('.emoji-picker').forEach(p => p.remove());
-  openPickerId = null;
-}
-
-function togglePicker(msgId) {
-  if (openPickerId === msgId) { closeAllPickers(); return; }
-  showPicker(msgId);
-}
-
-function closePickerOnOutside(e) {
-  if (!e.target.closest('.emoji-picker') && !e.target.closest('.bubble')) {
-    closeAllPickers();
-  }
-}
-
-// Close picker on outside touch (mobile)
-document.addEventListener('touchend', (e) => {
-  if (openPickerId && !e.target.closest('.emoji-picker') && !e.target.closest('.bubble')) {
-    closeAllPickers();
-  }
-}, { passive: true });
-
-function sendReaction(msgId, emoji) {
-  socket.emit('reaction', { msgId, emoji });
-  applyReaction(msgId, emoji, true);
-}
-
-function applyReaction(msgId, emoji, isMe) {
-  const rb = document.getElementById('rb-' + msgId);
-  if (!rb) return;
-  const existing = rb.querySelector(`[data-emoji="${emoji}"]`);
-  if (existing) {
-    const countEl = existing.querySelector('.count');
-    countEl.textContent = parseInt(countEl.textContent || 1) + 1;
-    existing.style.animation = 'none';
-    existing.offsetHeight;
-    existing.style.animation = 'pop 0.15s ease';
+function applyReaction(msgId,emoji){
+  const rb=document.getElementById('rb-'+msgId);
+  if(!rb) return;
+  const ex=rb.querySelector(`[data-emoji="${emoji}"]`);
+  if(ex){
+    const c=ex.querySelector('.count');
+    c.textContent=parseInt(c.textContent||1)+1;
+    ex.style.animation='none';ex.offsetHeight;ex.style.animation='pop 0.15s ease';
   } else {
-    const pill = document.createElement('div');
-    pill.className = 'react-pill';
-    pill.dataset.emoji = emoji;
-    pill.innerHTML = `${emoji} <span class="count">1</span>`;
-    pill.addEventListener('click', () => sendReaction(msgId, emoji));
+    const pill=document.createElement('div');
+    pill.className='react-pill';pill.dataset.emoji=emoji;
+    pill.innerHTML=`${emoji} <span class="count">1</span>`;
+    pill.addEventListener('click',()=>sendReaction(msgId,emoji));
     rb.appendChild(pill);
   }
-  const msgs = document.getElementById('messages');
-  if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  const m=document.getElementById('messages');
+  if(m) m.scrollTop=m.scrollHeight;
 }
 
-// ── Typing indicator ──────────────────────────────────────
-function showTypingIndicator() {
-  const msgs = document.getElementById('messages');
-  if (!msgs || document.getElementById('typing-el')) return;
-  const d = document.createElement('div');
-  d.className = 'msg them'; d.id = 'typing-el';
-  d.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
-  msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
-  typingEl = d;
+// ── Typing ─────────────────────────────────────────────────
+let typingTimer=null,iAmTyping=false,typingEl=null;
+function showTypingIndicator(){
+  const m=document.getElementById('messages');
+  if(!m||document.getElementById('typing-el')) return;
+  const d=document.createElement('div');d.className='msg them';d.id='typing-el';
+  d.innerHTML='<div class="typing-indicator"><span></span><span></span><span></span></div>';
+  m.appendChild(d);m.scrollTop=m.scrollHeight;typingEl=d;
+}
+function hideTypingIndicator(){ if(typingEl){typingEl.remove();typingEl=null;} }
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+// ── Actions ────────────────────────────────────────────────
+function findMatch(){
+  // read landing country
+  const sel=document.getElementById('country-select');
+  if(sel&&sel.value){
+    const c=COUNTRIES.find(x=>x.code===sel.value);
+    if(c){ myMeta={country:c.code,flag:c.flag}; localStorage.setItem('meta',JSON.stringify(myMeta)); }
+  }
+  socket.emit('set_meta',myMeta);
+  socket.emit('find_match');
+  showWaiting();
 }
 
-function hideTypingIndicator() {
-  if (typingEl) { typingEl.remove(); typingEl = null; }
-}
-
-function esc(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
-}
-
-// ── Actions ───────────────────────────────────────────────
-function findMatch() { socket.emit('find_match'); showWaiting(); }
-function cancelSearch() { showLanding(); }
-function nextStranger() { socket.emit('next'); showWaiting(); }
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
-}
-
-function handleTyping() {
-  if (!iAmTyping) { iAmTyping = true; socket.emit('typing', true); }
+function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();} }
+function handleTyping(){
+  if(!iAmTyping){iAmTyping=true;socket.emit('typing',true);}
   clearTimeout(typingTimer);
-  typingTimer = setTimeout(() => { iAmTyping = false; socket.emit('typing', false); }, 1200);
+  typingTimer=setTimeout(()=>{iAmTyping=false;socket.emit('typing',false);},1200);
 }
-
-function sendMsg() {
-  const el = document.getElementById('msg-input');
-  if (!el) return;
-  const text = el.value.trim();
-  if (!text) return;
-  el.value = ''; el.style.height = 'auto';
-  appendMsg('me', text);
-  socket.emit('message', text);
-  if (iAmTyping) { iAmTyping = false; socket.emit('typing', false); clearTimeout(typingTimer); }
+function sendMsg(){
+  const el=document.getElementById('msg-input');
+  if(!el) return;
+  const text=el.value.trim();if(!text) return;
+  el.value='';el.style.height='auto';
+  const id='msg-me-'+Date.now();
+  appendMsg('me',text,id);
+  socket.emit('message',{text,msgId:id});
+  if(iAmTyping){iAmTyping=false;socket.emit('typing',false);clearTimeout(typingTimer);}
   resetInactiveTimer();
 }
 
-// ── Socket events ─────────────────────────────────────────
-socket.on('user_count', n => {
-  document.getElementById('online-count').textContent = n + 1247;
+// ── Socket events ──────────────────────────────────────────
+// msgId map: their msgId → our local element id
+const remoteToLocal=new Map();
+
+socket.on('waiting',()=>{
+  // server couldn't find match immediately, retry in 5s
+  let s=5;
+  showWaiting(s);
+  const iv=setInterval(()=>{
+    s--;
+    const el=document.getElementById('wait-msg');
+    if(el&&s>0) el.textContent=currentLang==='ar'?`إعادة المحاولة خلال ${s} ثوانٍ...`:`Retrying in ${s}s...`;
+    if(s<=0){
+      clearInterval(iv);
+      socket.emit('find_match');
+    }
+  },1000);
 });
 
-socket.on('waiting', () => showWaiting());
-socket.on('matched', () => { showChat(); soundMatch(); });
+socket.on('matched',({partnerMeta:pm})=>{
+  soundMatch();
+  showConnecting(4);
+  setTimeout(()=>showChat(pm),4000);
+});
 
-socket.on('message', ({ text, msgId }) => {
+socket.on('message',({text,msgId})=>{
   hideTypingIndicator();
-  const localId = appendMsg('them', text);
-  socket.emit('map_msg_id', { remoteId: msgId, localId });
+  const localId=appendMsg('them',text);
+  // map their msgId → our localId so reactions can find the right bubble
+  remoteToLocal.set(msgId,localId);
   soundMessage();
   resetInactiveTimer();
 });
-socket.on('reaction', ({ msgId, emoji }) => {
-  const localId = remoteToLocal.get(msgId);
-  if (localId) applyReaction(localId, emoji, false);
+
+socket.on('reaction',({msgId,emoji})=>{
+  // msgId here is the sender's local id — we need to find our matching bubble
+  const localId=remoteToLocal.get(msgId);
+  if(localId) applyReaction(localId,emoji);
   soundReaction();
 });
 
-socket.on('typing', isTyping => {
-  if (isTyping) showTypingIndicator();
-  else hideTypingIndicator();
+socket.on('typing',isTyping=>{
+  if(isTyping) showTypingIndicator(); else hideTypingIndicator();
 });
 
-socket.on('partner_left', () => {
+socket.on('partner_left',()=>{
   hideTypingIndicator();
-  showDisconnected();
+  showDisconnected(t.discoMsg);
   soundDisconnect();
 });
 
-// msgId mapping: partner's msgId → our local msgId
-const remoteToLocal = new Map();
-socket.on('map_msg_id', ({ remoteId, localId }) => {
-  remoteToLocal.set(remoteId, localId);
-});
-
-// ── Init ──────────────────────────────────────────────────
+// ── Init ───────────────────────────────────────────────────
+applyTheme(currentTheme);
+if(nightOn){ document.getElementById('night-btn').textContent='☀️'; applyTheme(currentTheme); }
+applyLang(currentLang);
+// init settings country
+buildOptions(document.getElementById('settings-country'),myMeta.country||'');
 showLanding();
 
-// ── Sounds ────────────────────────────────────────────────
-const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-function beep(freq, duration, type = 'sine', vol = 0.3) {
-  try {
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.connect(g); g.connect(ctx.destination);
-    o.frequency.value = freq;
-    o.type = type;
-    g.gain.setValueAtTime(vol, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-    o.start(); o.stop(ctx.currentTime + duration);
-  } catch(e) {}
+// ── Audio ──────────────────────────────────────────────────
+let audioCtx=null;
+function getCtx(){if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function beep(freq,dur,type='sine',vol=0.3){
+  try{
+    const ctx=getCtx();
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    o.frequency.value=freq;o.type=type;
+    g.gain.setValueAtTime(vol,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
+    o.start();o.stop(ctx.currentTime+dur);
+  }catch(e){}
 }
-
-function soundMatch()     { beep(520, 0.15); setTimeout(() => beep(780, 0.2), 150); }
-function soundMessage()   { beep(440, 0.08, 'sine', 0.12); }
-function soundReaction()  { beep(600, 0.06, 'sine', 0.1); setTimeout(() => beep(800, 0.08), 80); }
-function soundDisconnect(){ beep(300, 0.25, 'sawtooth', 0.15); }
+function soundMatch(){beep(520,0.15);setTimeout(()=>beep(780,0.2),150);}
+function soundMessage(){beep(440,0.08,'sine',0.12);}
+function soundReaction(){beep(600,0.06,'sine',0.1);setTimeout(()=>beep(800,0.08),80);}
+function soundDisconnect(){beep(300,0.25,'sawtooth',0.15);}
 </script>
 </body>
 </html>
