@@ -13,11 +13,8 @@ const io = new Server(server, {
 
 app.use(express.static(path.join(__dirname, '../public')));
 
-// queue: array of socket ids waiting
-const waitingQueue = [];
-// pairs: Map<socketId, partnerId>
-const pairs = new Map();
-// meta: Map<socketId, {country,flag}>
+const waitingQueue = [];   // socket ids waiting
+const pairs = new Map();   // socketId -> partnerId
 const userMeta = new Map();
 let realUserCount = 0;
 
@@ -46,10 +43,8 @@ function unpair(sid, notifyPartner = true) {
 function tryMatch(sid) {
   const socket = io.sockets.sockets.get(sid);
   if (!socket) return;
-  // find someone else in queue
   const idx = waitingQueue.findIndex(id => id !== sid);
   if (idx === -1) {
-    // no one available — add to queue, tell client to just wait (no countdown)
     if (!waitingQueue.includes(sid)) waitingQueue.push(sid);
     socket.emit('waiting_no_match');
     return;
@@ -57,11 +52,7 @@ function tryMatch(sid) {
   const partnerId = waitingQueue.splice(idx, 1)[0];
   removeFromQueue(sid);
   const partner = io.sockets.sockets.get(partnerId);
-  if (!partner) {
-    // partner disappeared, try again
-    tryMatch(sid);
-    return;
-  }
+  if (!partner) { tryMatch(sid); return; }
   pairs.set(sid, partnerId);
   pairs.set(partnerId, sid);
   const myMeta = userMeta.get(sid) || {};
@@ -78,19 +69,9 @@ io.on('connection', (socket) => {
     userMeta.set(socket.id, { country: country||'', flag: flag||'' });
   });
 
-  socket.on('find_match', () => {
-    unpair(socket.id, true);
-    tryMatch(socket.id);
-  });
-
-  socket.on('leave', () => {
-    unpair(socket.id, true);
-  });
-
-  socket.on('cancel', () => {
-    // just remove from queue, don't notify anyone
-    removeFromQueue(socket.id);
-  });
+  socket.on('find_match', () => { unpair(socket.id, true); tryMatch(socket.id); });
+  socket.on('leave', () => { unpair(socket.id, true); });
+  socket.on('cancel', () => { removeFromQueue(socket.id); });
 
   socket.on('message', ({ text, msgId }) => {
     if (typeof text !== 'string') return;
@@ -98,14 +79,16 @@ io.on('connection', (socket) => {
     const partnerId = pairs.get(socket.id);
     if (!partnerId) return;
     const partner = io.sockets.sockets.get(partnerId);
-    if (partner) partner.emit('message', { text, msgId });
+    // Send message AND the sender's socket id so receiver can build the id map
+    if (partner) partner.emit('message', { text, msgId, senderId: socket.id });
   });
 
-  socket.on('reaction', ({ msgId, emoji }) => {
+  socket.on('reaction', ({ msgId, emoji, senderIsMe }) => {
     if (typeof emoji !== 'string') return;
     const partnerId = pairs.get(socket.id);
     if (!partnerId) return;
     const partner = io.sockets.sockets.get(partnerId);
+    // relay reaction with original msgId — receiver maps it to their local id
     if (partner) partner.emit('reaction', { msgId, emoji });
   });
 
@@ -126,4 +109,3 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Chatcha on :${PORT}`));
-
