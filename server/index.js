@@ -87,7 +87,7 @@ function doMatch(sid) {
       removeFromQueue(sid);
       spawnBot(sid);
     }
-  }, 5000);
+  }, 1000);
   pendingBots.set(sid, t);
 }
 
