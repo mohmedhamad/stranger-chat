@@ -253,17 +253,6 @@ body{
 }
 .btn-ghost:hover{border-color:var(--muted);color:var(--text);}
 
-/* ── CONNECTING ── */
-#s-conn{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:18px;
-}
-.cring{width:88px;height:88px;position:relative;display:flex;align-items:center;justify-content:center;}
-.cring svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
-.cring svg circle{fill:none;stroke:var(--border);stroke-width:5;}
-.cring svg circle.cp{stroke:var(--accent);stroke-linecap:round;}
-#cnum{font-size:30px;font-weight:700;color:var(--accent);position:relative;z-index:1;}
-#s-conn p{font-size:13px;color:var(--muted);}
 
 /* ── CHAT ── */
 #s-chat{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
@@ -524,7 +513,6 @@ const T = {
     start:'Start chatting',
     looking:'Searching...',
     cancel:'cancel',
-    connmsg:'Connecting your chat...',
     chatWith:'chatting with a stranger',
     end:'End',
     discoyou:'You ended the chat.',
@@ -548,7 +536,6 @@ const T = {
     start:'ابدأ الدردشة',
     looking:'جاري البحث...',
     cancel:'إلغاء',
-    connmsg:'جاري الاتصال...',
     chatWith:'تتحدث مع غريب',
     end:'إنهاء',
     discoyou:'أنهيت المحادثة.',
@@ -797,38 +784,7 @@ function cancelAndHome(){
 }
 
 // Connecting countdown screen
-let connectingIv = null;
-function showConnecting(sec, onDone){
-  const C = 226.2;
-  document.getElementById('screen').innerHTML = `
-    <div id="s-conn">
-      <div class="cring">
-        <svg width="88" height="88" viewBox="0 0 88 88">
-          <circle cx="44" cy="44" r="36"/>
-          <circle class="cp" id="ccp" cx="44" cy="44" r="36"
-            stroke-dasharray="${C}" stroke-dashoffset="${C}"/>
-        </svg>
-        <span id="cnum">${sec}</span>
-      </div>
-      <p>${t.connmsg}</p>
-    </div>`;
-  // animate from full to 0
-  let s = sec;
-  const ccp = document.getElementById('ccp');
-  if (ccp) ccp.style.transition = `stroke-dashoffset ${sec}s linear`;
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      if (ccp) ccp.style.strokeDashoffset = '0';
-    });
-  });
-  clearInterval(connectingIv);
-  connectingIv = setInterval(()=>{
-    s--;
-    const el = document.getElementById('cnum');
-    if (el) el.textContent = s;
-    if (s <= 0){ clearInterval(connectingIv); connectingIv=null; onDone(); }
-  }, 1000);
-}
+
 
 let msgCtr = 0;
 let partnerMeta = {};
@@ -1039,7 +995,8 @@ socket.on('matched', ({partnerMeta:pm})=>{
   if (cancelPending) return;
   connecting = true;
   soundMatch();
-  showConnecting(4, ()=>{ if(!cancelPending){ connecting=false; showChat(pm); } });
+  showChat(pm);
+  connecting = false;
 });
 
 socket.on('message', ({text, msgId})=>{
@@ -1064,7 +1021,6 @@ socket.on('typing', v=>{ if(v) showTyping(); else hideTyping(); });
 
 socket.on('partner_left', ()=>{
   if ((!inChat && !connecting) || cancelPending) return;
-  clearInterval(connectingIv); connectingIv = null; // stop countdown from overriding disco screen
   connecting = false;
   inChat = false;
   hideTyping();
