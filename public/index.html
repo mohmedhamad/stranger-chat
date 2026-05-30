@@ -797,6 +797,7 @@ function cancelAndHome(){
 }
 
 // Connecting countdown screen
+let connectingIv = null;
 function showConnecting(sec, onDone){
   const C = 226.2;
   document.getElementById('screen').innerHTML = `
@@ -820,11 +821,12 @@ function showConnecting(sec, onDone){
       if (ccp) ccp.style.strokeDashoffset = '0';
     });
   });
-  const iv = setInterval(()=>{
+  clearInterval(connectingIv);
+  connectingIv = setInterval(()=>{
     s--;
     const el = document.getElementById('cnum');
     if (el) el.textContent = s;
-    if (s <= 0){ clearInterval(iv); onDone(); }
+    if (s <= 0){ clearInterval(connectingIv); connectingIv=null; onDone(); }
   }, 1000);
 }
 
@@ -1041,7 +1043,7 @@ socket.on('matched', ({partnerMeta:pm})=>{
 });
 
 socket.on('message', ({text, msgId})=>{
-  if (!inChat) return;
+  // No inChat guard — messages should be accepted once matched, even during connecting countdown
   hideTyping();
   const localId = appendMsg('them', text);
   if (localId && msgId) {
@@ -1062,7 +1064,9 @@ socket.on('typing', v=>{ if(v) showTyping(); else hideTyping(); });
 
 socket.on('partner_left', ()=>{
   if ((!inChat && !connecting) || cancelPending) return;
+  clearInterval(connectingIv); connectingIv = null; // stop countdown from overriding disco screen
   connecting = false;
+  inChat = false;
   hideTyping();
   showDisco(t.discopartner);
   soundDisco();
@@ -1086,5 +1090,4 @@ function soundDisco(){beep(300,.25,'sawtooth',.12);}
 </script>
 </body>
 </html>
-
 
