@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Stranger/ — Chat with someone random</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <script src="/socket.io/socket.io.js"></script>
@@ -24,11 +24,16 @@
     --shadow:   0 1px 4px rgba(0,0,0,0.07);
   }
 
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+
   body {
     font-family: 'DM Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
-    height: 100dvh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -38,15 +43,24 @@
   #app {
     width: 100%;
     max-width: 560px;
-    height: 100dvh;
-    max-height: 700px;
+    height: 100%;
+    height: -webkit-fill-available;
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  @media (min-width: 600px) {
+    body { height: 100dvh; }
+    #app {
+      height: 100dvh;
+      max-height: 700px;
+      border-radius: 16px;
+    }
   }
 
   /* TOP BAR */
@@ -81,7 +95,7 @@
   }
   @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  #screen { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  #screen { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
 
   /* LANDING */
   #s-landing {
@@ -144,7 +158,7 @@
   .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
 
   /* CHAT */
-  #s-chat { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  #s-chat { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
 
   #chat-bar {
     display: flex; align-items: center; justify-content: space-between;
@@ -168,6 +182,8 @@
     display: flex; flex-direction: column; gap: 12px;
     scrollbar-width: thin; scrollbar-color: var(--border) transparent;
     background: var(--bg);
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
   }
 
   .msg { display: flex; flex-direction: column; max-width: 78%; gap: 2px; position: relative; }
@@ -178,6 +194,7 @@
     padding: 10px 14px; font-size: 13.5px;
     line-height: 1.55; word-break: break-word;
     position: relative; cursor: default;
+    -webkit-user-select: none; user-select: none;
   }
   .them .bubble {
     background: var(--bubble-them);
@@ -218,23 +235,27 @@
     background: var(--bg3);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 6px 8px;
-    display: flex; gap: 2px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    z-index: 10;
-    bottom: calc(100% + 4px);
+    padding: 8px 10px;
+    display: flex; gap: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    z-index: 100;
+    bottom: calc(100% + 6px);
     animation: pop 0.12s ease;
+    touch-action: none;
   }
   .msg.me .emoji-picker { right: 0; }
   .msg.them .emoji-picker { left: 0; }
   @keyframes pop { from{transform:scale(0.8);opacity:0} to{transform:scale(1);opacity:1} }
   .emoji-btn {
     background: none; border: none; cursor: pointer;
-    font-size: 18px; padding: 4px 5px; border-radius: 8px;
+    font-size: 22px; padding: 6px 7px; border-radius: 8px;
     transition: background 0.1s, transform 0.1s;
     line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   .emoji-btn:hover { background: var(--bg2); transform: scale(1.2); }
+  .emoji-btn:active { transform: scale(1.3); background: var(--bg2); }
 
   .sys-msg {
     align-self: center;
@@ -275,7 +296,7 @@
     flex: 1; background: var(--bg3);
     border: 1px solid var(--border);
     color: var(--text); padding: 10px 14px;
-    font-size: 13.5px; font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-family: 'DM Sans', sans-serif;
     border-radius: 22px; outline: none; resize: none;
     transition: border-color 0.15s;
     min-height: 42px; max-height: 100px;
@@ -291,6 +312,7 @@
     transition: background 0.15s, transform 0.1s;
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 2px 8px rgba(45,106,79,0.3);
+    -webkit-tap-highlight-color: transparent;
   }
   .btn-send:hover { background: var(--accent2); }
   .btn-send:active { transform: scale(0.92); }
@@ -304,11 +326,31 @@
   #s-disco .disco-icon { font-size: 32px; }
   #s-disco p { font-size: 13px; color: var(--muted); }
   .btn-row { display: flex; gap: 10px; }
+
+  /* INACTIVE TIMEOUT OVERLAY */
+  #inactive-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(245,240,232,0.92);
+    z-index: 200;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    padding: 28px;
+    backdrop-filter: blur(2px);
+  }
+  #inactive-overlay.visible { display: flex; }
+  #inactive-overlay .inactive-icon { font-size: 36px; }
+  #inactive-overlay p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  #inactive-overlay strong { color: var(--text); }
 </style>
 </head>
 <body>
 
-<div id="app">
+<div id="app" style="position:relative;">
   <div id="topbar">
     <div class="logo">Stranger</div>
     <div class="online-pill">
@@ -317,6 +359,13 @@
     </div>
   </div>
   <div id="screen"></div>
+
+  <!-- Inactive overlay -->
+  <div id="inactive-overlay">
+    <div class="inactive-icon">💤</div>
+    <p><strong>Still there?</strong><br>You've been inactive for 3 minutes.<br>Your stranger is waiting...</p>
+    <button class="btn-big" onclick="dismissInactive()">I'm back</button>
+  </div>
 </div>
 
 <script>
@@ -326,11 +375,40 @@ let iAmTyping = false;
 let typingEl = null;
 let msgCounter = 0;
 let openPickerId = null;
+let isMobile = ('ontouchstart' in window);
+
+// ── Inactivity timer (3 minutes) ──────────────────────────
+let inactiveTimer = null;
+const INACTIVE_MS = 3 * 60 * 1000;
+
+function resetInactiveTimer() {
+  clearTimeout(inactiveTimer);
+  const overlay = document.getElementById('inactive-overlay');
+  if (overlay) overlay.classList.remove('visible');
+  inactiveTimer = setTimeout(() => {
+    const overlay = document.getElementById('inactive-overlay');
+    if (overlay && document.getElementById('messages')) {
+      overlay.classList.add('visible');
+    }
+  }, INACTIVE_MS);
+}
+
+function dismissInactive() {
+  const overlay = document.getElementById('inactive-overlay');
+  if (overlay) overlay.classList.remove('visible');
+  resetInactiveTimer();
+}
+
+// Track any activity
+['touchstart','touchend','mousemove','keydown','click'].forEach(evt => {
+  document.addEventListener(evt, resetInactiveTimer, { passive: true });
+});
 
 const EMOJIS = ['😂','❤️','😮','😢','👏','🔥'];
 
 // ── Screens ───────────────────────────────────────────────
 function showLanding() {
+  clearTimeout(inactiveTimer);
   document.getElementById('screen').innerHTML = `
     <div id="s-landing">
       <div class="landing-icon">💬</div>
@@ -346,6 +424,7 @@ function showLanding() {
 }
 
 function showWaiting() {
+  clearTimeout(inactiveTimer);
   document.getElementById('screen').innerHTML = `
     <div id="s-waiting">
       <div class="spinner-wrap"><span>🔍</span></div>
@@ -376,11 +455,13 @@ function showChat() {
       </div>
     </div>`;
   sysMsg('you are now connected to a stranger ✦');
-  document.getElementById('msg-input').focus();
+  if (!isMobile) document.getElementById('msg-input').focus();
   document.addEventListener('click', closePickerOnOutside);
+  resetInactiveTimer();
 }
 
 function showDisconnected() {
+  clearTimeout(inactiveTimer);
   document.removeEventListener('click', closePickerOnOutside);
   document.getElementById('screen').innerHTML = `
     <div id="s-disco">
@@ -411,13 +492,37 @@ function appendMsg(who, text) {
   const d = document.createElement('div');
   d.className = `msg ${who}`;
   d.dataset.id = id;
-  d.innerHTML = `
-    <div class="bubble" onmouseenter="showPicker('${id}')" onmouseleave="startHidePicker('${id}')"
-         ontouchstart="togglePicker('${id}')">
-      ${esc(text)}
-    </div>
-    <div class="reaction-bar" id="rb-${id}"></div>
-    <div class="ts">${ts}</div>`;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble';
+  bubble.innerHTML = esc(text);
+
+  // Desktop: hover to show picker
+  if (!isMobile) {
+    bubble.addEventListener('mouseenter', () => showPicker(id));
+    bubble.addEventListener('mouseleave', () => startHidePicker(id));
+  }
+
+  // Mobile: tap bubble to toggle picker
+  if (isMobile) {
+    bubble.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      togglePicker(id);
+    });
+  }
+
+  const rb = document.createElement('div');
+  rb.className = 'reaction-bar';
+  rb.id = 'rb-' + id;
+
+  const tsEl = document.createElement('div');
+  tsEl.className = 'ts';
+  tsEl.textContent = ts;
+
+  d.appendChild(bubble);
+  d.appendChild(rb);
+  d.appendChild(tsEl);
   msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;
   return id;
@@ -436,15 +541,35 @@ function showPicker(msgId) {
   const picker = document.createElement('div');
   picker.className = 'emoji-picker';
   picker.id = 'picker-' + msgId;
-  picker.onmouseenter = () => clearTimeout(hidePickerTimer);
-  picker.onmouseleave = () => startHidePicker(msgId);
+
+  if (!isMobile) {
+    picker.addEventListener('mouseenter', () => clearTimeout(hidePickerTimer));
+    picker.addEventListener('mouseleave', () => startHidePicker(msgId));
+  }
+
   EMOJIS.forEach(emoji => {
     const btn = document.createElement('button');
     btn.className = 'emoji-btn';
     btn.textContent = emoji;
-    btn.onclick = (e) => { e.stopPropagation(); sendReaction(msgId, emoji); closeAllPickers(); };
+    btn.setAttribute('type', 'button');
+
+    if (isMobile) {
+      btn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        sendReaction(msgId, emoji);
+        closeAllPickers();
+      });
+    } else {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sendReaction(msgId, emoji);
+        closeAllPickers();
+      });
+    }
     picker.appendChild(btn);
   });
+
   bubble.appendChild(picker);
   openPickerId = msgId;
 }
@@ -471,6 +596,13 @@ function closePickerOnOutside(e) {
   }
 }
 
+// Close picker on outside touch (mobile)
+document.addEventListener('touchend', (e) => {
+  if (openPickerId && !e.target.closest('.emoji-picker') && !e.target.closest('.bubble')) {
+    closeAllPickers();
+  }
+}, { passive: true });
+
 function sendReaction(msgId, emoji) {
   socket.emit('reaction', { msgId, emoji });
   applyReaction(msgId, emoji, true);
@@ -491,7 +623,7 @@ function applyReaction(msgId, emoji, isMe) {
     pill.className = 'react-pill';
     pill.dataset.emoji = emoji;
     pill.innerHTML = `${emoji} <span class="count">1</span>`;
-    pill.onclick = () => sendReaction(msgId, emoji);
+    pill.addEventListener('click', () => sendReaction(msgId, emoji));
     rb.appendChild(pill);
   }
   const msgs = document.getElementById('messages');
@@ -547,6 +679,7 @@ function sendMsg() {
   appendMsg('me', text);
   socket.emit('message', text);
   if (iAmTyping) { iAmTyping = false; socket.emit('typing', false); clearTimeout(typingTimer); }
+  resetInactiveTimer();
 }
 
 // ── Socket events ─────────────────────────────────────────
@@ -562,6 +695,7 @@ socket.on('message', ({ text, msgId }) => {
   const localId = appendMsg('them', text);
   socket.emit('map_msg_id', { remoteId: msgId, localId });
   soundMessage();
+  resetInactiveTimer();
 });
 socket.on('reaction', ({ msgId, emoji }) => {
   const localId = remoteToLocal.get(msgId);
@@ -588,18 +722,21 @@ socket.on('map_msg_id', ({ remoteId, localId }) => {
 
 // ── Init ──────────────────────────────────────────────────
 showLanding();
-// --- Sounds ---
+
+// ── Sounds ────────────────────────────────────────────────
 const ctx = new (window.AudioContext || window.webkitAudioContext)();
 
 function beep(freq, duration, type = 'sine', vol = 0.3) {
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
-  o.connect(g); g.connect(ctx.destination);
-  o.frequency.value = freq;
-  o.type = type;
-  g.gain.setValueAtTime(vol, ctx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-  o.start(); o.stop(ctx.currentTime + duration);
+  try {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = freq;
+    o.type = type;
+    g.gain.setValueAtTime(vol, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    o.start(); o.stop(ctx.currentTime + duration);
+  } catch(e) {}
 }
 
 function soundMatch()     { beep(520, 0.15); setTimeout(() => beep(780, 0.2), 150); }
