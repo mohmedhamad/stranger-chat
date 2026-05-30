@@ -400,34 +400,6 @@ body{
 #s-disco p{font-size:14px;color:var(--muted);line-height:1.6;}
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
 
-/* ── INACTIVE OVERLAY ── */
-#ioverlay{
-  display:none;position:absolute;inset:0;
-  background:var(--overlay);z-index:300;
-  flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;text-align:center;padding:24px;
-  backdrop-filter:blur(4px);
-}
-#ioverlay.on{display:flex;}
-.iicon{font-size:36px;}
-#imsg{font-size:14px;color:var(--muted);line-height:1.7;max-width:260px;}
-#imsg strong{color:var(--text);}
-#icdring{
-  width:80px;height:80px;position:relative;
-  display:flex;align-items:center;justify-content:center;
-}
-#icdring svg{position:absolute;top:0;left:0;transform:rotate(-90deg);}
-#icdring svg circle{fill:none;stroke:var(--border);stroke-width:5;}
-#icdring svg circle.icp{stroke:var(--danger);stroke-linecap:round;transition:stroke-dashoffset 1s linear;}
-#icdnum{font-size:24px;font-weight:700;color:var(--danger);position:relative;z-index:1;}
-.btn-back{
-  background:var(--accent);color:#fff;border:none;
-  padding:11px 32px;font-size:14px;font-family:var(--font);
-  border-radius:50px;cursor:pointer;
-  transition:background .15s,transform .1s;
-}
-.btn-back:hover{background:var(--accent2);}
-.btn-back:active{transform:scale(.97);}
 </style>
 </head>
 <body>
@@ -471,21 +443,6 @@ body{
     <div class="cflag-grid" id="cflag-grid"></div>
     <button class="cflag-none" id="cflag-none-btn" onclick="clearCountry()">✕ None</button>
   </div>
-
-  <!-- INACTIVE OVERLAY -->
-  <div id="ioverlay">
-    <div class="iicon">💤</div>
-    <p id="imsg"><strong>Still there?</strong><br>You'll be disconnected in:</p>
-    <div id="icdring">
-      <svg width="80" height="80" viewBox="0 0 80 80">
-        <circle cx="40" cy="40" r="34"/>
-        <circle class="icp" id="icp" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="0"/>
-      </svg>
-      <span id="icdnum">60</span>
-    </div>
-    <button class="btn-back" id="imback-btn" onclick="dismissInactive()">I'm back!</button>
-  </div>
-
   <div id="screen"></div>
 </div>
 
@@ -520,9 +477,6 @@ const T = {
     findnew:'Chat again',home:'Home',
     conn:'Connected ✦',
     online:'online',
-    stillthere:'Still there?',
-    discwarn:"You'll be disconnected in:",
-    imback:"I'm back!",
     placeholder:'Say something...',
     settings:'Settings',language:'Language',night:'Night mode',country:'Your country',
     cnone:'✕ None',
@@ -543,9 +497,6 @@ const T = {
     findnew:'دردشة جديدة',home:'الرئيسية',
     conn:'تم الاتصال ✦',
     online:'متصل',
-    stillthere:'هل أنت هناك؟',
-    discwarn:'سيتم قطع اتصالك خلال:',
-    imback:'أنا هنا!',
     placeholder:'قل شيئاً...',
     settings:'الإعدادات',language:'اللغة',night:'الوضع الليلي',country:'بلدك',
     cnone:'✕ بلا',
@@ -597,9 +548,6 @@ function applyLang(l) {
   // lang buttons
   document.getElementById('lb-en').classList.toggle('active', l==='en');
   document.getElementById('lb-ar').classList.toggle('active', l==='ar');
-  // inactive overlay
-  document.getElementById('imsg').innerHTML = `<strong>${t.stillthere}</strong><br>${t.discwarn}`;
-  document.getElementById('imback-btn').textContent = t.imback;
   // rebuild flag grids
   buildFlagGrid('cflag-grid', myMeta.country||'', (code,flag)=>{ myMeta={country:code,flag}; saveMeta(); socket.emit('set_meta',myMeta); });
 }
@@ -684,54 +632,11 @@ setInterval(()=>{ fakeOff=Math.max(99,Math.min(800,fakeOff+(Math.floor(Math.rand
 socket.on('user_count', n=>{ realOnline=n; showOnline(); });
 
 // ── Inactivity ─────────────────────────────────────────────
-const ICD_C = 213.6; // 2*pi*34
-let iTimer=null, iInterval=null, iSecs=60;
 
-function resetITimer(){
-  clearTimeout(iTimer); clearInterval(iInterval);
-  hideIOverlay();
-  if (!inChat) return;
-  iTimer = setTimeout(startICountdown, 60000);
-}
-
-function startICountdown(){
-  iSecs = 60;
-  showIOverlay();
-  setIRing(60);
-  iInterval = setInterval(()=>{
-    iSecs--;
-    setIRing(iSecs);
-    if (iSecs <= 0){
-      clearInterval(iInterval);
-      socket.emit('leave');
-      inChat = false;
-      hideIOverlay();
-      showDisco(t.discoyou);
-    }
-  }, 1000);
-}
-
-function setIRing(s){
-  document.getElementById('icdnum').textContent = s;
-  document.getElementById('icp').style.strokeDashoffset = ICD_C*(1-s/60);
-}
-
-function showIOverlay(){ document.getElementById('ioverlay').classList.add('on'); }
-function hideIOverlay(){ document.getElementById('ioverlay').classList.remove('on'); }
-function dismissInactive(){ clearInterval(iInterval); hideIOverlay(); resetITimer(); }
-
-['touchstart','mousemove','keydown','click'].forEach(ev=>{
-  document.addEventListener(ev,()=>{ if(inChat) resetITimer(); },{passive:true});
-});
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible' && inChat) resetITimer();
-});
 
 // ── Screens ────────────────────────────────────────────────
 function cleanUp(){
   inChat=false; cancelPending=false;
-  clearTimeout(iTimer); clearInterval(iInterval);
-  hideIOverlay();
   document.getElementById('spanel').classList.remove('open');
 }
 
@@ -826,7 +731,6 @@ function showChat(pm){
   if (!isMobile) document.getElementById('minput')?.focus();
   document.addEventListener('click', closePOnOut);
   inChat = true;
-  resetITimer();
 }
 
 function showDisco(msg){
@@ -977,7 +881,6 @@ function sendMsg(){
   appendMsg('me',text,localId);
   socket.emit('message',{text,msgId:localId});
   if(iAmTyping){iAmTyping=false;socket.emit('typing',false);clearTimeout(typingTimer);}
-  resetITimer();
 }
 
 // ── Socket events ──────────────────────────────────────────
@@ -1008,7 +911,6 @@ socket.on('message', ({text, msgId})=>{
     localToRemote.set(localId, msgId); // reverse: so we can react with the right id
   }
   soundMsg();
-  resetITimer();
 });
 
 socket.on('reaction', ({msgId, emoji})=>{
@@ -1046,4 +948,5 @@ function soundDisco(){beep(300,.25,'sawtooth',.12);}
 </script>
 </body>
 </html>
+
 
