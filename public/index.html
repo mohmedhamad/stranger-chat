@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Chatcha | شاتشا - Chat Online, Meet Strangers, Arab Chat</title>
-<meta name="description" content="Chatcha شاتشا: Free anonymous Arab chat online. Meet strangers, chat with Arabs. دردشه عربيه مجانية، دردشه اونلاين، شات عربى، دردشه مع بنات, كلام بنات ,سكس بنات, محادثات ساخنه, كلم بنات, مكالمه فيديو: نسوان, شات مصرى, مصريه, مزه,."/>
+<meta name="description" content="Chatcha شاتشا: Free anonymous Arab chat online. Meet strangers, chat with Arabs. دردشه عربيه مجانية، دردشه اونلاين، شات عربى، دردشه مع بنات."/>
 <meta name="keywords" content="arab chat,arabic chat,chat online,meet strangers,chat with arab,chatcha,شاتشا,دردشه عربى,دردشه اونلاين,شات عربى,دردشه مصرى,دردشه مع بنات,دردشه عربيه,random chat,online chat free"/>
 <meta name="robots" content="index,follow"/>
 <link rel="canonical" href="https://chatcha.onrender.com/"/>
@@ -58,8 +58,8 @@ body{
 @media(min-width:640px){
   body{background:#1a1f2e;}
   #app{
-    width:min(680px,96vw);
-    height:min(820px,96dvh);
+    width:min(900px,98vw);
+    height:min(860px,98dvh);
     border-radius:20px;
     border:1px solid var(--border);
     box-shadow:0 20px 60px rgba(0,0,0,.4);
@@ -297,7 +297,7 @@ body{
 .msg{display:flex;flex-direction:column;max-width:78%;gap:2px;position:relative;}
 .msg.them{align-self:flex-start;}
 .msg.me{align-self:flex-end;}
-@media(min-width:640px){.msg{max-width:62%;}}
+@media(min-width:640px){.msg{max-width:52%;}}
 
 .bubble{
   padding:10px 14px;font-size:14px;
@@ -331,15 +331,13 @@ body{
 
 /* emoji picker */
 .epicker{
-  position:absolute;background:var(--bg3);
+  position:fixed;background:var(--bg3);
   border:1px solid var(--border);border-radius:14px;
   padding:8px;display:flex;gap:2px;
-  box-shadow:0 6px 24px rgba(0,0,0,.18);
-  z-index:100;bottom:calc(100% + 6px);
-  animation:pop .12s ease;touch-action:none;
+  box-shadow:0 6px 24px rgba(0,0,0,.25);
+  z-index:9999;animation:pop .12s ease;touch-action:none;
+  pointer-events:all;
 }
-.msg.me .epicker{right:0;}
-.msg.them .epicker{left:0;}
 @keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
 .ebtn{
   background:none;border:none;cursor:pointer;font-size:22px;
@@ -510,6 +508,7 @@ let lang = localStorage.getItem('lang') ||
 let nightOn = localStorage.getItem('night') === '1';
 let myMeta = (() => { try{ return JSON.parse(localStorage.getItem('meta')||'{}'); }catch(e){return {};} })();
 let inChat = false;
+let connecting = false;
 let cancelPending = false; // flag: user clicked cancel/home, ignore pending socket events
 
 const socket = io({ reconnectionAttempts: 5 });
@@ -835,11 +834,13 @@ let typingEl = null;
 let openPickId = null, hidePickTimer = null;
 let typingTimer = null, iAmTyping = false;
 const remoteToLocal = new Map();
+const localToRemote = new Map(); // localId of them-bubble -> original msgId
 
 function showChat(pm){
   partnerMeta = pm || {};
   msgCtr = 0;
   remoteToLocal.clear();
+  localToRemote.clear();
   const fh = partnerMeta.flag ? `<span class="cflag">${partnerMeta.flag}</span>` : '';
   document.getElementById('screen').innerHTML = `
     <div id="s-chat">
@@ -907,10 +908,10 @@ function appendMsg(who, text, forcedId){
   const bubble=document.createElement('div'); bubble.className='bubble';
   bubble.innerHTML=esc(text);
   if (!isMobile){
-    bubble.addEventListener('mouseenter',()=>showPicker(id));
+    bubble.addEventListener('mouseenter',()=>showPicker(id, bubble));
     bubble.addEventListener('mouseleave',()=>startHidePicker(id));
   } else {
-    bubble.addEventListener('touchend',e=>{ e.preventDefault(); e.stopPropagation(); togglePicker(id); });
+    bubble.addEventListener('touchend',e=>{ e.preventDefault(); e.stopPropagation(); togglePicker(id, bubble); });
   }
   const rb=document.createElement('div'); rb.className='rbar'; rb.id='rb-'+id;
   const tsEl=document.createElement('div'); tsEl.className='ts'; tsEl.textContent=ts;
@@ -922,12 +923,11 @@ function appendMsg(who, text, forcedId){
 // ── Emoji picker ───────────────────────────────────────────
 const EMOJIS=['😂','❤️','😮','😢','👏','🔥'];
 
-function showPicker(id){
+function showPicker(id, triggerEl){
   clearTimeout(hidePickTimer);
   if (openPickId===id) return;
   closeAllPickers();
   const msg=document.querySelector(`[data-id="${id}"]`); if(!msg) return;
-  const bubble=msg.querySelector('.bubble');
   const pk=document.createElement('div'); pk.className='epicker'; pk.id='pk-'+id;
   if (!isMobile){
     pk.addEventListener('mouseenter',()=>clearTimeout(hidePickTimer));
@@ -942,18 +942,32 @@ function showPicker(id){
     }
     pk.appendChild(b);
   });
-  bubble.appendChild(pk);
+  document.body.appendChild(pk);
+  // Position above the bubble, clamped inside viewport
+  const ref = triggerEl || msg.querySelector('.bubble');
+  const rect = ref.getBoundingClientRect();
+  const pkW = EMOJIS.length * 42 + 16;
+  const pkH = 54;
+  let left = rect.left;
+  let top = rect.top - pkH - 6;
+  if (left + pkW > window.innerWidth - 8) left = window.innerWidth - pkW - 8;
+  if (left < 8) left = 8;
+  if (top < 8) top = rect.bottom + 6;
+  pk.style.left = left + 'px';
+  pk.style.top = top + 'px';
   openPickId=id;
 }
 function startHidePicker(id){ hidePickTimer=setTimeout(()=>{ if(openPickId===id) closeAllPickers(); },400); }
 function closeAllPickers(){ document.querySelectorAll('.epicker').forEach(p=>p.remove()); openPickId=null; }
-function togglePicker(id){ if(openPickId===id){closeAllPickers();return;} showPicker(id); }
+function togglePicker(id, el){ if(openPickId===id){closeAllPickers();return;} showPicker(id, el); }
 function closePOnOut(e){ if(!e.target.closest('.epicker')&&!e.target.closest('.bubble')) closeAllPickers(); }
 document.addEventListener('touchend',e=>{ if(openPickId&&!e.target.closest('.epicker')&&!e.target.closest('.bubble')) closeAllPickers(); },{passive:true});
 
 function sendReaction(msgId,emoji){
-  socket.emit('reaction',{msgId,emoji});
-  applyReaction(msgId,emoji);
+  // If reacting to a received message, translate to original sender's msgId
+  const outId = localToRemote.get(msgId) || msgId;
+  socket.emit('reaction',{msgId:outId,emoji});
+  applyReaction(msgId,emoji); // apply locally using local id
 }
 function applyReaction(msgId,emoji){
   const rb=document.getElementById('rb-'+msgId); if(!rb) return;
@@ -1021,15 +1035,19 @@ socket.on('waiting_no_match', ()=>{
 
 socket.on('matched', ({partnerMeta:pm})=>{
   if (cancelPending) return;
+  connecting = true;
   soundMatch();
-  showConnecting(4, ()=>{ if(!cancelPending) showChat(pm); });
+  showConnecting(4, ()=>{ if(!cancelPending){ connecting=false; showChat(pm); } });
 });
 
 socket.on('message', ({text, msgId})=>{
   if (!inChat) return;
   hideTyping();
   const localId = appendMsg('them', text);
-  if (localId && msgId) remoteToLocal.set(msgId, localId);
+  if (localId && msgId) {
+    remoteToLocal.set(msgId, localId);
+    localToRemote.set(localId, msgId); // reverse: so we can react with the right id
+  }
   soundMsg();
   resetITimer();
 });
@@ -1043,7 +1061,8 @@ socket.on('reaction', ({msgId, emoji})=>{
 socket.on('typing', v=>{ if(v) showTyping(); else hideTyping(); });
 
 socket.on('partner_left', ()=>{
-  if (!inChat || cancelPending) return;
+  if ((!inChat && !connecting) || cancelPending) return;
+  connecting = false;
   hideTyping();
   showDisco(t.discopartner);
   soundDisco();
@@ -1067,4 +1086,5 @@ function soundDisco(){beep(300,.25,'sawtooth',.12);}
 </script>
 </body>
 </html>
+
 
