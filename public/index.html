@@ -275,26 +275,13 @@ body{
 .btn-end:hover{opacity:.85;}
 
 #msgs{
-  position:relative;
   flex:1;overflow-y:auto;
   padding:14px 12px;
   display:flex;flex-direction:column;gap:10px;
-  min-height:0;
-  background:url("https://wimg.rule34.xxx//images/875/c944c048402aa129641e0f813e4fd723.gif?17638809") center center/cover no-repeat;
+  background:var(--bg);min-height:0;
   scrollbar-width:thin;scrollbar-color:var(--border) transparent;
   -webkit-overflow-scrolling:touch;
   transition:background .3s;
-}
-#msgs::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.4);
-  pointer-events:none;
-}
-#msgs > *{
-  position:relative;
-  z-index:1;
 }
 .msg{display:flex;flex-direction:column;max-width:78%;gap:2px;position:relative;}
 .msg.them{align-self:flex-start;}
